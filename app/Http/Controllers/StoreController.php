@@ -45,25 +45,25 @@ class StoreController extends Controller
 
     public function store(Request $request)
     {
-        // Validate the incoming request
-        $validated = $request->validate([
+        $request->validate([
             'storeName' => 'required|string|max:255',
             'ownerName' => 'required|string|max:255',
-            'phoneNumber' => 'nullable|string',
-            'address' => 'required|string',
+            'phoneNumber' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
+            // เพิ่มการตรวจสอบค่า OpenDate ถ้าจำเป็น
         ]);
 
-        // Create a new store
-        Store::create([
-            'StoreName' => $validated['storeName'],
-            'ownerName' => $validated['ownerName'],
-            'PhoneNumber' => $validated['phoneNumber'],
-            'Address' => $validated['address'],
-            'user_id' => Auth::id(), // Assigning the current authenticated user
-        ]);
+        $store = new Store();
+        $store->StoreName = $request->storeName;
+        $store->ownerName = $request->ownerName;
+        $store->PhoneNumber = $request->phoneNumber;
+        $store->Address = $request->address;
+        $store->user_id = auth()->id();
+        $store->Rating = 0; // ตั้งค่าเริ่มต้นให้กับ Rating
+        $store->OpenDate = now(); // ตั้งค่าเริ่มต้นให้กับ OpenDate
+        $store->save();
 
-        // Redirect or show a success message
-        return redirect()->route('stores.index'); // Adjust the redirect path as needed
+        return redirect()->route('stores.index')->with('success', 'Store created successfully.');
     }
 
     // เมธอดอื่นๆ...

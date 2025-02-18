@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Inertia } from '@inertiajs/inertia-react';
+import { Inertia } from '@inertiajs/inertia';
 
 const Create = () => {
   const [storeName, setStoreName] = useState('');
@@ -10,7 +10,6 @@ const Create = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Send data to the backend using Inertia
     Inertia.post('/stores', {
       storeName,
       ownerName,

@@ -9,11 +9,12 @@ use App\Http\Controllers\CartController;
 
 Route::get('/homepage', [ProductController::class, 'index'])->name('homepage.index');
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-Route::post('/cart', [CartController::class, 'store'])->name('cart.store'); // Add this line
+Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
 Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update');
 Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
 Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
 Route::get('stores/create', [StoreController::class, 'create'])->name('stores.create');
+Route::post('stores', [StoreController::class, 'store'])->name('stores.store'); // Add this line
 Route::get('stores/{id}', [StoreController::class, 'show'])->name('stores.show');
 Route::get('stores', [StoreController::class, 'index'])->name('stores.index');
 
