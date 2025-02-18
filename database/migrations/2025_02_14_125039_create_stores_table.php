@@ -12,13 +12,13 @@ return new class extends Migration {
             $table->id();
             $table->string('StoreName');
             $table->string('ownerName');
-            $table->string('PhoneNumber');
-            $table->string('Address');
+            $table->string('PhoneNumber')->nullable();
+            $table->string('Address')->nullable();
             $table->decimal('Rating', 3, 2);
             $table->date('OpenDate');
-            $table->integer('Stock');
-            $table->string('StoreStatus');
-            $table->string('Picture');
+            $table->integer('Stock')->nullable();
+            $table->string('StoreStatus')->nullable();
+            $table->string('Picture')->nullable();
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null'); // แก้ไขที่นี่
             $table->timestamps();
         });

@@ -6,7 +6,7 @@ use App\Models\Store;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-
+use Illuminate\Support\Facades\Auth;
 class StoreController extends Controller
 {
     // เมธอดอื่นๆ...
@@ -59,7 +59,7 @@ class StoreController extends Controller
             'ownerName' => $validated['ownerName'],
             'PhoneNumber' => $validated['phoneNumber'],
             'Address' => $validated['address'],
-            'user_id' => auth()->id(), // Assigning the current authenticated user
+            'user_id' => Auth::id(), // Assigning the current authenticated user
         ]);
 
         // Redirect or show a success message
