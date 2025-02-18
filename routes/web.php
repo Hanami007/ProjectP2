@@ -8,8 +8,8 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 
 Route::get('/homepage', [ProductController::class, 'index'])->name('homepage.index');
-Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-Route::post('/cart', [CartController::class, 'store'])->name('cart.store'); // Add this line
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index'); // เส้นทางสำหรับแสดงหน้าตะกร้า
+Route::post('/cart', [CartController::class, 'store'])->name('cart.store'); // เส้นทางสำหรับเพิ่มสินค้าในตะกร้า
 Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update');
 Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
 Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');

@@ -11,6 +11,11 @@ const ProductDetail = ({ product }) => {
         post('/cart', {
             product_id: product.id,
             quantity: 1
+        }, {
+            onSuccess: () => {
+                // เปลี่ยนเส้นทางไปยังหน้าตะกร้าหลังจากเพิ่มสินค้าในตะกร้าเรียบร้อยแล้ว
+                window.location.href = '/cart';
+            }
         });
     };
 

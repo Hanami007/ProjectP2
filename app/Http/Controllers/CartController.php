@@ -12,54 +12,57 @@ class CartController extends Controller
 {
     public function index()
     {
-        // Ensure the user is authenticated
+        // ตรวจสอบว่าผู้ใช้ได้เข้าสู่ระบบหรือไม่
         if (!Auth::check()) {
-            return redirect()->route('login')->with('error', 'You must be logged in to view the cart.');
+            return redirect()->route('login')->with('error', 'คุณต้องเข้าสู่ระบบเพื่อดูตะกร้าสินค้า');
         }
 
-        // Fetch the cart items with related product data
+        // ดึงข้อมูลสินค้าที่อยู่ในตะกร้าของผู้ใช้ที่เข้าสู่ระบบ พร้อมข้อมูลสินค้าที่เกี่ยวข้อง
         $cartItems = Cart::where('user_id', Auth::id())
                         ->with('product')
                         ->get();
 
+        // ส่งข้อมูลไปยังหน้าแสดงผลตะกร้าสินค้า
         return Inertia::render('Homepage/cart', ['cartItems' => $cartItems]);
     }
 
     public function store(Request $request)
     {
-        // Ensure the user is authenticated
+        // ตรวจสอบว่าผู้ใช้ได้เข้าสู่ระบบหรือไม่
         if (!Auth::check()) {
-            return redirect()->route('login')->with('error', 'You must be logged in to add items to the cart.');
+            return redirect()->route('login')->with('error', 'คุณต้องเข้าสู่ระบบเพื่อเพิ่มสินค้าในตะกร้า');
         }
 
+        // ตรวจสอบความถูกต้องของข้อมูลที่ส่งมา
         $validated = $request->validate([
             'product_id' => 'required|exists:products,id',
             'quantity' => 'required|integer|min:1',
         ]);
 
-        // Add the product to the cart
+        // เพิ่มสินค้าลงในตะกร้า
         Cart::create([
             'user_id' => Auth::id(),
             'product_id' => $validated['product_id'],
             'quantity' => $validated['quantity'],
         ]);
 
-        return redirect()->back()->with('success', 'Product added to cart!');
+        return redirect()->back()->with('success', 'เพิ่มสินค้าในตะกร้าเรียบร้อยแล้ว');
     }
 
     public function update(Request $request)
     {
-        // Ensure the user is authenticated
+        // ตรวจสอบว่าผู้ใช้ได้เข้าสู่ระบบหรือไม่
         if (!Auth::check()) {
-            return redirect()->route('login')->with('error', 'You must be logged in to update the cart.');
+            return redirect()->route('login')->with('error', 'คุณต้องเข้าสู่ระบบเพื่ออัปเดตตะกร้าสินค้า');
         }
 
+        // ตรวจสอบความถูกต้องของข้อมูลที่ส่งมา
         $validated = $request->validate([
             'product_id' => 'required|exists:products,id',
             'quantity' => 'required|integer|min:1',
         ]);
 
-        // Update the cart item quantity
+        // อัปเดตจำนวนสินค้าที่อยู่ในตะกร้า
         $cartItem = Cart::where('user_id', Auth::id())
                         ->where('product_id', $validated['product_id'])
                         ->first();
@@ -68,21 +71,21 @@ class CartController extends Controller
             $cartItem->update(['quantity' => $validated['quantity']]);
         }
 
-        return redirect()->back()->with('success', 'Cart updated!');
+        return redirect()->back()->with('success', 'อัปเดตตะกร้าสินค้าเรียบร้อยแล้ว');
     }
 
     public function remove($id)
     {
-        // Ensure the user is authenticated
+        // ตรวจสอบว่าผู้ใช้ได้เข้าสู่ระบบหรือไม่
         if (!Auth::check()) {
-            return redirect()->route('login')->with('error', 'You must be logged in to remove items from the cart.');
+            return redirect()->route('login')->with('error', 'คุณต้องเข้าสู่ระบบเพื่อลบสินค้าออกจากตะกร้า');
         }
 
-        // Remove the cart item
+        // ลบสินค้าที่อยู่ในตะกร้า
         Cart::where('user_id', Auth::id())
             ->where('product_id', $id)
             ->delete();
 
-        return redirect()->back()->with('success', 'Item removed from cart!');
+        return redirect()->back()->with('success', 'ลบสินค้าออกจากตะกร้าเรียบร้อยแล้ว');
     }
 }
