@@ -24,6 +24,7 @@ const Homepage = ({ products }) => {
             setProcessing(false);
         }
     };
+    
 
     return (
         <div className="container mx-auto p-4">
