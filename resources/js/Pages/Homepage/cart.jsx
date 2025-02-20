@@ -2,18 +2,18 @@ import React from 'react';
 import { Link, useForm } from '@inertiajs/inertia-react';
 
 const CartPage = ({ cartItems }) => {
-    const { post, delete: destroy } = useForm();
+    const { post, patch, delete: destroy } = useForm();
 
     const updateQuantity = (item, quantity) => {
         if (quantity < 1) return;
-        post('/cart/update', { product_id: item.id, quantity });
+        patch('/cart/update', { product_id: item.product.id, quantity });
     };
 
     const removeFromCart = (item) => {
-        destroy(`/cart/remove/${item.id}`);
+        destroy(`/cart/remove/${item.product.id}`);
     };
 
-    const total = cartItems.reduce((sum, item) => sum + item.Price * item.quantity, 0).toFixed(2);
+    const total = cartItems.reduce((sum, item) => sum + parseFloat(item.product.Price) * item.quantity, 0).toFixed(2);
 
     return (
         <div className="container mx-auto p-6">
@@ -23,12 +23,12 @@ const CartPage = ({ cartItems }) => {
             ) : (
                 <div className="bg-white shadow-lg rounded-lg p-6">
                     {cartItems.map((item) => (
-                        <div key={item.id} className="flex items-center justify-between border-b py-4">
+                        <div key={item.product.id} className="flex items-center justify-between border-b py-4">
                             <div className="flex items-center space-x-4">
-                                <img src={item.ProductImage || 'default.jpg'} alt={item.ProductName} className="w-16 h-16 object-cover rounded-full" />
+                                <img src={item.product.ProductImage || 'default.jpg'} alt={item.product.ProductName} className="w-16 h-16 object-cover rounded-full" />
                                 <div>
-                                    <h2 className="text-lg font-semibold">{item.ProductName}</h2>
-                                    <p className="text-green-600 font-bold">฿{item.Price.toFixed(2)}</p>
+                                    <h2 className="text-lg font-semibold">{item.product.ProductName}</h2>
+                                    <p className="text-green-600 font-bold">฿{parseFloat(item.product.Price).toFixed(2)}</p>
                                 </div>
                             </div>
                             <div className="flex items-center space-x-2">
