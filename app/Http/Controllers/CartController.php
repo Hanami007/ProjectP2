@@ -2,53 +2,77 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Models\Cart;
 use App\Models\Product;
-use Illuminate\Http\Request;
-use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
+use Illuminate\Support\Facades\Log;
 
 class CartController extends Controller
 {
     public function index()
     {
-        // ดึงข้อมูลตะกร้าสินค้าของผู้ใช้ปัจจุบัน
-        $cartItems = Cart::with('product')
-            ->where('user_id', auth::id())
+        Log::info('CartController@index');
+        // ดึงข้อมูลสินค้าที่อยู่ในตะกร้า (รวมถึงของผู้ใช้ที่ไม่ได้ล็อกอิน)
+        $cartItems = Cart::where(function ($query) {
+            if (Auth::check()) {
+                $query->where('user_id', Auth::id());
+            } else {
+                $query->where('session_id', session()->getId());
+            }
+        })
+            ->with('product')
             ->get();
 
-        return Inertia::render('Homepage/cart', [
-            'cartItems' => $cartItems,
-        ]);
+        return Inertia::render('Homepage/cart', ['cartItems' => $cartItems]);
     }
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'product_id' => 'required|exists:products,id',
-            'quantity' => 'required|integer|min:1',
-        ]);
+        Log::info('CartController@store');
+        try {
+            Log::info('Request Data: ', $request->all());
 
-        // ตรวจสอบว่ามีสินค้านี้ในตะกร้าหรือไม่
-        $cart = Cart::where('user_id', auth::id())
-            ->where('product_id', $validated['product_id'])
-            ->first();
+            // ตรวจสอบความถูกต้องของข้อมูลที่ส่งมา
+            $validated = $request->validate([
+                'product_id' => 'required|exists:products,id',
+                'quantity' => 'required|integer|min:1',
+            ]);
 
-        if ($cart) {
-            // อัพเดทจำนวนสินค้าหากมีอยู่แล้ว
-            $cart->update([
-                'quantity' => $cart->quantity + $validated['quantity'],
-            ]);
-        } else {
-            // สร้างรายการใหม่หากยังไม่มี
-            Cart::create([
-                'user_id' => auth::id(),
-                'product_id' => $validated['product_id'],
-                'quantity' => $validated['quantity'],
-            ]);
+            // ถ้าไม่ได้ล็อกอิน ให้ใช้ session_id แทน user_id
+            $userId = Auth::check() ? Auth::id() : null;
+            $sessionId = session()->getId();
+
+            // ตรวจสอบว่าสินค้านี้อยู่ในตะกร้าแล้วหรือไม่
+            $cartItem = Cart::where(function ($query) use ($userId, $sessionId) {
+                if ($userId) {
+                    $query->where('user_id', $userId);
+                } else {
+                    $query->where('session_id', $sessionId);
+                }
+            })
+                ->where('product_id', $validated['product_id'])
+                ->first();
+
+            if ($cartItem) {
+                // ถ้ามีสินค้าอยู่แล้วให้เพิ่มจำนวน
+                $cartItem->increment('quantity', $validated['quantity']);
+            } else {
+                // ถ้าไม่มี ให้เพิ่มสินค้าใหม่ลงตะกร้า
+                Cart::create([
+                    'user_id' => $userId,
+                    'session_id' => $userId ? null : $sessionId, // ใช้ session_id ถ้าไม่ได้ล็อกอิน
+                    'product_id' => $validated['product_id'],
+                    'quantity' => $validated['quantity'],
+                ]);
+            }
+
+            return response()->json(['message' => 'เพิ่มสินค้าในตะกร้าเรียบร้อยแล้ว'], 200);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['message' => 'เกิดข้อผิดพลาด'], 500);
         }
-
-        return redirect()->back()->with('success', 'เพิ่มสินค้าลงตะกร้าเรียบร้อยแล้ว');
     }
 
     public function update(Request $request)
@@ -58,82 +82,58 @@ class CartController extends Controller
             'quantity' => 'required|integer|min:1',
         ]);
 
-        Cart::where('user_id', auth::id())
-            ->where('product_id', $validated['product_id'])
-            ->update(['quantity' => $validated['quantity']]);
+        $userId = Auth::check() ? Auth::id() : null;
+        $sessionId = session()->getId();
 
-        return redirect()->back();
+        $cartItem = Cart::where(function ($query) use ($userId, $sessionId) {
+            if ($userId) {
+                $query->where('user_id', $userId);
+            } else {
+                $query->where('session_id', $sessionId);
+            }
+        })
+            ->where('product_id', $validated['product_id'])
+            ->first();
+
+        if ($cartItem) {
+            $cartItem->update(['quantity' => $validated['quantity']]);
+        }
+
+        return response()->json(['message' => 'อัปเดตตะกร้าสินค้าเรียบร้อยแล้ว']);
     }
 
     public function remove($id)
     {
-        Cart::where('user_id', auth::id())
+        $userId = Auth::check() ? Auth::id() : null;
+        $sessionId = session()->getId();
+
+        Cart::where(function ($query) use ($userId, $sessionId) {
+            if ($userId) {
+                $query->where('user_id', $userId);
+            } else {
+                $query->where('session_id', $sessionId);
+            }
+        })
             ->where('product_id', $id)
             ->delete();
 
-        return redirect()->back();
+        return response()->json(['message' => 'ลบสินค้าออกจากตะกร้าเรียบร้อยแล้ว']);
     }
 
     public function count()
     {
-        $count = Cart::where('user_id', auth::id())->sum('quantity');
+        $userId = Auth::check() ? Auth::id() : null;
+        $sessionId = session()->getId();
+
+        $count = Cart::where(function ($query) use ($userId, $sessionId) {
+            if ($userId) {
+                $query->where('user_id', $userId);
+            } else {
+                $query->where('session_id', $sessionId);
+            }
+        })
+            ->count();
 
         return response()->json(['count' => $count]);
-    }
-
-    public function increment(Request $request)
-    {
-
-        $validated = $request->validate([
-            'product_id' => 'required|exists:products,id',
-        ]);
-
-        $cart = Cart::where('user_id', auth::id())
-            ->where('product_id', $validated['product_id'])
-            ->first();
-
-        if ($cart) {
-            $cart->update([
-                'quantity' => $cart->quantity + 1,
-            ]);
-            return response()->json([
-                'message' => 'เพิ่มจำนวนสินค้าเรียบร้อย',
-                'new_quantity' => $cart->quantity
-            ]);
-        }
-
-        return response()->json(['error' => 'ไม่พบสินค้าในตะกร้า'], 404);
-    }
-
-    public function decrement(Request $request)
-    {
-        $validated = $request->validate([
-            'product_id' => 'required|exists:products,id',
-        ]);
-
-        $cart = Cart::where('user_id', auth::id())
-            ->where('product_id', $validated['product_id'])
-            ->first();
-
-
-        if (!$cart) {
-            return response()->json(['error' => 'ไม่พบสินค้าในตะกร้า'], 404);
-        }
-
-        if ($cart->quantity > 1) {
-            $cart->update([
-                'quantity' => $cart->quantity - 1,
-            ]);
-            return response()->json([
-                'message' => 'ลดจำนวนสินค้าเรียบร้อย',
-                'new_quantity' => $cart->quantity
-            ]);
-        } else {
-            $cart->delete();
-            return response()->json([
-                'message' => 'ลบสินค้าออกจากตะกร้าเรียบร้อย',
-                'new_quantity' => 0
-            ]);
-        }
     }
 }

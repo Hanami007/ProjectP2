@@ -10,7 +10,7 @@ use App\Http\Controllers\CartController;
 Route::get('/homepage', [ProductController::class, 'index'])->name('homepage.index');
 
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-Route::post('/cart', [CartController::class, 'store'])->name('cart.store'); // แก้ไขเส้นทางให้ชัดเจนขึ้น
+Route::post('/cart', [CartController::class, 'store'])->name('cart.store'); 
 Route::patch('/cart/update', [CartController::class, 'update'])->name('cart.update');
 Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
 Route::get('/cart/count', [CartController::class, 'count'])->name('cart.count');

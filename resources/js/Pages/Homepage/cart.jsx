@@ -16,7 +16,7 @@ const CartPage = ({ cartItems }) => {
 
     // Use the Inertia methods consistently instead of mixing with direct Axios calls
     const incrementQuantity = (item) => {
-        post("/cart/increment", { product_id: item.product.id });
+        updateQuantity(item, item.quantity + 1);
     };
 
     const decrementQuantity = (item) => {
