@@ -43,28 +43,36 @@ class StoreController extends Controller
         ]);
     }
 
+
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'storeName' => 'required|string|max:255',
             'ownerName' => 'required|string|max:255',
-            'phoneNumber' => 'required|string|max:255',
-            'address' => 'required|string|max:255',
-            // เพิ่มการตรวจสอบค่า OpenDate ถ้าจำเป็น
+            'phoneNumber' => 'required|string|max:20',  // จำกัดความยาวที่เหมาะสม
+            'address' => 'required|string|max:500',     // จำกัดความยาวที่เหมาะสม
         ]);
 
-        $store = new Store();
-        $store->StoreName = $request->storeName;
-        $store->ownerName = $request->ownerName;
-        $store->PhoneNumber = $request->phoneNumber;
-        $store->Address = $request->address;
-        $store->user_id = auth::id();
-        $store->Rating = 0; // ตั้งค่าเริ่มต้นให้กับ Rating
-        $store->OpenDate = now(); // ตั้งค่าเริ่มต้นให้กับ OpenDate
-        $store->save();
+        try {
+            $store = Store::create([
+                'StoreName' => $validated['storeName'],
+                'ownerName' => $validated['ownerName'],
+                'PhoneNumber' => $validated['phoneNumber'],
+                'Address' => $validated['address'],
+                'user_id' => Auth::id(),
+                'Rating' => 0,
+                'OpenDate' => now(),
+            ]);
 
-        return redirect()->route('stores.index')->with('success', 'Store created successfully.');
+            return redirect()
+                ->route('stores.show', $store->id)
+                ->with('success', 'ร้านค้าถูกสร้างเรียบร้อยแล้ว');
+
+        } catch (\Exception $e) {
+            return back()
+                ->withInput()
+                ->with('error', 'เกิดข้อผิดพลาดในการสร้างร้านค้า กรุณาลองใหม่อีกครั้ง');
+        }
     }
-
-    // เมธอดอื่นๆ...
 }
+    // เมธอดอื่นๆ...
