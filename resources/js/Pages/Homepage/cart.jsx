@@ -1,21 +1,32 @@
 import React from "react";
 import { Link, useForm } from "@inertiajs/inertia-react";
-import axios from "axios"; // Added missing import
+import axios from "axios";
 
 const CartPage = ({ cartItems }) => {
-    const { post, patch, delete: destroy } = useForm();
+    const { patch, delete: destroy } = useForm();
 
     const updateQuantity = (item, quantity) => {
         if (quantity < 1) return;
-        patch("/cart/update", { product_id: item.product.id, quantity });
+        console.log('Updating quantity with Inertia', { product_id: item.product.id, quantity });
+
+        patch("/cart/update", {
+            product_id: item.product.id,
+            quantity: quantity
+        }, {
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
     };
 
     const removeFromCart = (item) => {
         destroy(`/cart/remove/${item.product.id}`);
     };
 
-    // Use the Inertia methods consistently instead of mixing with direct Axios calls
     const incrementQuantity = (item) => {
+        console.log('Increment clicked', item);
+        console.log('New quantity will be', item.quantity + 1);
         updateQuantity(item, item.quantity + 1);
     };
 

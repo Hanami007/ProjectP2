@@ -58,7 +58,7 @@ class StoreController extends Controller
         $store->ownerName = $request->ownerName;
         $store->PhoneNumber = $request->phoneNumber;
         $store->Address = $request->address;
-        $store->user_id = auth()->id();
+        $store->user_id = auth::id();
         $store->Rating = 0; // ตั้งค่าเริ่มต้นให้กับ Rating
         $store->OpenDate = now(); // ตั้งค่าเริ่มต้นให้กับ OpenDate
         $store->save();

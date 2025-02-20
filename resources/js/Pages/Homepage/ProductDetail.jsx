@@ -13,6 +13,14 @@ const ProductDetail = ({ product, initialCartCount }) => {
     const { post } = useForm();
     const [processing, setProcessing] = useState(false);
     const [cartCount, setCartCount] = useState(initialCartCount);
+    const [reviews, setReviews] = useState([]);
+
+    useEffect(() => {
+        // Fetch reviews for the product
+        axios.get(`/reviews/${product.id}`).then((response) => {
+            setReviews(response.data);
+        });
+    }, [product.id]);
 
     const addToCart = async (productId) => {
         setProcessing(true);
@@ -173,6 +181,33 @@ const ProductDetail = ({ product, initialCartCount }) => {
                     ))}
                 </div>
             )}
+            {/* ตารางรีวิวสินค้า */}
+            <div className="mt-6 bg-white p-4 rounded-lg shadow">
+                <h2 className="text-2xl font-semibold mb-4">รีวิวสินค้า</h2>
+
+                {/* ถ้ามีรีวิว */}
+                {reviews.length > 0 ? (
+                    <div className="space-y-4">
+                        {reviews.map((review) => (
+                            <div key={review.id} className="border p-3 rounded">
+                                <p className="font-semibold">
+                                    {review.user.name}
+                                </p>
+                                <p className="text-yellow-500">
+                                    ⭐ {review.rating} / 5
+                                </p>
+                                <p className="text-gray-600">
+                                    {review.comment}
+                                </p>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <p className="text-gray-500">
+                        ยังไม่มีรีวิวสำหรับสินค้านี้
+                    </p>
+                )}
+            </div>
         </div>
     );
 };
