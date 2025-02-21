@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Inertia\Inertia;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -10,6 +10,14 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
+
+     public function show(Request $request)
+    {
+        return Inertia::render('Profile/User', [
+            'user' => $request->user(),
+        ]);
+    }
+
     public function index()
     {
         return "user page" ;
@@ -30,16 +38,6 @@ class UserController extends Controller
     {
         //
     }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(String $user)
-    {
-        //
-        return "user page".$user;
-    }
-
     /**
      * Show the form for editing the specified resource.
      */

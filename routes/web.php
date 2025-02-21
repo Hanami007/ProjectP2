@@ -7,7 +7,8 @@ use Inertia\Inertia;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ReviewController;
-
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\OrderController;
 
 Route::get('/homepage', [ProductController::class, 'index'])->name('homepage.index');
 
@@ -28,7 +29,12 @@ Route::get('stores/create', [StoreController::class, 'create'])->name('stores.cr
 Route::post('stores', [StoreController::class, 'store'])->name('stores.store'); // Add this line
 Route::get('stores/{id}', [StoreController::class, 'show'])->name('stores.show');
 Route::get('stores', [StoreController::class, 'index'])->name('stores.index');
+Route::middleware(['auth:sanctum', 'verified'])->get('/mystore', [StoreController::class, 'mystore'])->name('mystore');
+Route::middleware(['auth:sanctum', 'verified'])->get('/user-store', [StoreController::class, 'userStore'])->name('user.store');
+Route::middleware(['auth:sanctum', 'verified'])->delete('/stores/{id}', [StoreController::class, 'destroy'])->name('stores.destroy');
 
+Route::middleware(['auth:sanctum', 'verified'])->post('/products', [ProductController::class, 'store'])->name('products.store');
+Route::middleware(['auth:sanctum', 'verified'])->patch('/products/{id}', [ProductController::class, 'update'])->name('products.update');
 
 
 Route::get('/', function () {
