@@ -19,7 +19,7 @@ Route::post('/cart/increment', [CartController::class, 'increment'])->name('cart
 Route::post('/cart/decrement', [CartController::class, 'decrement'])->name('cart.decrement');
 
 Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
-
+    
 Route::post('/reviews', [ReviewController::class, 'store'])->middleware('auth');
 Route::get('/reviews/{productId}', [ReviewController::class, 'index']);
 

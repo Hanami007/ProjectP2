@@ -25,16 +25,22 @@ export default function AuthenticatedLayout({ header, children }) {
 
                             <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink
-                                    href={route("dashboard")}
-                                    active={route().current("dashboard")}
-                                >
-                                    Dashboard
-                                </NavLink>
-                                <NavLink
                                     href={route("homepage.index")}
                                     active={route().current("homepage.index")}
                                 >
                                     Homepage
+                                </NavLink>
+                                <NavLink
+                                    href={route("stores.index")}
+                                    active={route().current("stores.index")}
+                                >
+                                    Store
+                                </NavLink>
+                                <NavLink
+                                    href={route("stores.create")}
+                                    active={route().current("stores.create")}
+                                >
+                                    Create Store
                                 </NavLink>
                             </div>
                         </div>
@@ -135,16 +141,22 @@ export default function AuthenticatedLayout({ header, children }) {
                 >
                     <div className="space-y-1 pb-3 pt-2">
                         <ResponsiveNavLink
-                            href={route("dashboard")}
-                            active={route().current("dashboard")}
-                        >
-                            Dashboard
-                        </ResponsiveNavLink>
-                        <ResponsiveNavLink
                             href={route("homepage.index")}
                             active={route().current("homepage.index")}
                         >
-                            homepage
+                            Homepage
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            href={route("stores.index")}
+                            active={route().current("stores.index")}
+                        >
+                            Store
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            href={route("stores.create")}
+                            active={route().current("stores.create")}
+                        >
+                            Create Store
                         </ResponsiveNavLink>
                     </div>
 
