@@ -90,7 +90,7 @@ class CartController extends Controller
             ->where('product_id', $id)
             ->delete();
 
-        return redirect()->back();
+            return Inertia::location(route('cart.index'));
     }
 
     public function count()
