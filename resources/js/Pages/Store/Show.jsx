@@ -15,25 +15,42 @@ export default function Show({ store, products }) {
             </p>
 
             <h2 className="text-xl font-semibold mb-4">Products:</h2>
-            <ul className="space-y-4">
+            <div className="flex flex-wrap gap-4 justify-center">
                 {products.map((product) => (
-                    <li
+                    <div
                         key={product.id}
-                        className="p-4 border border-gray-300 rounded-md shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col items-center"
+                        className="p-4 border border-gray-300 rounded-md shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col items-center w-64"
                     >
-                        <Link href={route("products.show", product.id)} className="text-center">
+                        <Link
+                            href={route("products.show", product.id)}
+                            className="text-center"
+                        >
                             <img
-                                src={product.image_url || "default_image_url.jpg"}
+                                src={
+                                    product.image_url || "default_image_url.jpg"
+                                }
                                 alt={product.ProductName}
                                 className="w-32 h-32 object-cover rounded-full mx-auto"
                             />
-                            <h3 className="font-semibold mt-3">{product.ProductName}</h3>
-                            <p className="text-gray-700">ราคา: ${product.Price}</p>
-                            <p className="text-gray-500">{product.Description}</p>
+                            <h3 className="font-semibold mt-3">
+                                {product.ProductName}
+                            </h3>
+                            <p className="text-gray-700">
+                                ราคา: ${product.Price}
+                            </p>
+                            <p className="text-gray-600">
+                                Stock: {product.Stock}
+                            </p>
+                            <p className="text-gray-600">
+                                Category: {product.ProductType}
+                            </p>
+                            <p className="text-gray-500">
+                                {product.Description}
+                            </p>
                         </Link>
-                    </li>
+                    </div>
                 ))}
-            </ul>
+            </div>
 
             <Link
                 href={route("stores.index")}
