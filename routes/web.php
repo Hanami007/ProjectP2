@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\OrderController;
 
 Route::get('/homepage', [ProductController::class, 'index'])->name('homepage.index');
 
@@ -17,7 +18,9 @@ Route::get('/cart/count', [CartController::class, 'count'])->name('cart.count');
 Route::post('/cart/increment', [CartController::class, 'increment'])->name('cart.increment');
 Route::post('/cart/decrement', [CartController::class, 'decrement'])->name('cart.decrement');
 
-Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
+Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show'); 
+
+Route::get('/orders', [OrderController::class, 'index']);
 
 Route::get('stores/create', [StoreController::class, 'create'])->name('stores.create');
 Route::post('stores', [StoreController::class, 'store'])->name('stores.store'); // Add this line
