@@ -19,7 +19,7 @@ Route::post('/cart/increment', [CartController::class, 'increment'])->name('cart
 Route::post('/cart/decrement', [CartController::class, 'decrement'])->name('cart.decrement');
 
 Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
-    
+
 Route::post('/reviews', [ReviewController::class, 'store'])->middleware('auth');
 Route::get('/reviews/{productId}', [ReviewController::class, 'index']);
 
@@ -27,6 +27,7 @@ Route::get('stores/create', [StoreController::class, 'create'])->name('stores.cr
 Route::post('stores', [StoreController::class, 'store'])->name('stores.store'); // Add this line
 Route::get('stores/{id}', [StoreController::class, 'show'])->name('stores.show');
 Route::get('stores', [StoreController::class, 'index'])->name('stores.index');
+
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [

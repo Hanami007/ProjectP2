@@ -34,10 +34,10 @@ class StoreController extends Controller
         $store = Store::findOrFail($id);
 
         // ดึงข้อมูลสินค้าที่เกี่ยวข้องกับร้านนี้
-        $products = Product::where('id_stores', $store->id)->get();
+        $products = Product::where('id_stores', $id)->get();
 
         // ส่งข้อมูลไปยังหน้าแสดงรายละเอียดร้านค้า
-        return Inertia::render('Store/Show', [  // เปลี่ยนเป็นหน้า Show
+        return Inertia::render('Store/Show', [
             'store' => $store,
             'products' => $products
         ]);
