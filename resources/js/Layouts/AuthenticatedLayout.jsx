@@ -3,14 +3,23 @@ import Dropdown from "@/Components/Dropdown";
 import NavLink from "@/Components/NavLink";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
 import { Link, usePage } from "@inertiajs/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 export default function AuthenticatedLayout({ header, children }) {
     const { auth } = usePage().props;
     const user = auth ? auth.user : null;
 
-    const [showingNavigationDropdown, setShowingNavigationDropdown] =
-        useState(false);
+    const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
+    const [hasStore, setHasStore] = useState(false);
+
+    useEffect(() => {
+        if (user) {
+            axios.get(route('user.store')).then(response => {
+                setHasStore(!!response.data);
+            });
+        }
+    }, [user]);
 
     return (
         <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -40,11 +49,11 @@ export default function AuthenticatedLayout({ header, children }) {
                                     Store
                                 </NavLink>
                                 <NavLink
-                                    href={route("stores.create")}
-                                    active={route().current("stores.create")}
+                                    href={hasStore ? route("mystore") : route("stores.create")}
+                                    active={route().current(hasStore ? "mystore" : "stores.create")}
                                     className="text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
                                 >
-                                    Create Store
+                                    {hasStore ? "My Store" : "Create Store"}
                                 </NavLink>
                             </div>
                         </div>
@@ -162,11 +171,11 @@ export default function AuthenticatedLayout({ header, children }) {
                             Store
                         </ResponsiveNavLink>
                         <ResponsiveNavLink
-                            href={route("stores.create")}
-                            active={route().current("stores.create")}
+                            href={hasStore ? route("mystore") : route("stores.create")}
+                            active={route().current(hasStore ? "mystore" : "stores.create")}
                             className="text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
                         >
-                            Create Store
+                            {hasStore ? "My Store" : "Create Store"}
                         </ResponsiveNavLink>
                     </div>
 

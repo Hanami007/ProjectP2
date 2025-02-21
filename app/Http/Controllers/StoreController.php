@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Store;
@@ -7,6 +6,7 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
+
 class StoreController extends Controller
 {
     // เมธอดอื่นๆ...
@@ -43,7 +43,6 @@ class StoreController extends Controller
         ]);
     }
 
-
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -74,5 +73,32 @@ class StoreController extends Controller
                 ->with('error', 'เกิดข้อผิดพลาดในการสร้างร้านค้า กรุณาลองใหม่อีกครั้ง');
         }
     }
+
+    public function mystore(Request $request)
+    {
+        // ดึงข้อมูลร้านค้าที่ผู้ใช้เป็นเจ้าของ
+        $store = Store::where('user_id', $request->user()->id)->first();
+
+        return Inertia::render('Store/Mystore', [
+            'store' => $store,
+        ]);
+    }
+
+    public function userStore(Request $request)
+    {
+        return Store::where('user_id', $request->user()->id)->first();
+    }
+
+    public function destroy($id)
+    {
+        $store = Store::findOrFail($id);
+
+        if ($store->user_id !== Auth::id()) {
+            return redirect()->route('mystore')->with('error', 'คุณไม่มีสิทธิ์ลบร้านค้านี้');
+        }
+
+        $store->delete();
+
+        return redirect()->route('mystore')->with('success', 'ร้านค้าถูกลบเรียบร้อยแล้ว');
+    }
 }
-    // เมธอดอื่นๆ...
