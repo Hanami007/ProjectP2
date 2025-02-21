@@ -85,13 +85,18 @@ class CartController extends Controller
     }
 
     public function remove($id)
-    {
-        Cart::where('user_id', Auth::id())
-            ->where('product_id', $id)
-            ->delete();
+{
+    $deleted = Cart::where('user_id', Auth::id())
+        ->where('product_id', $id)
+        ->delete();
 
-            return Inertia::location(route('cart.index'));
+    if ($deleted) {
+        return Inertia::location(route('cart.index'));
+    } else {
+        return response()->json(['error' => 'ไม่พบสินค้าที่ต้องการลบ'], 404);
     }
+}
+
 
     public function count()
     {

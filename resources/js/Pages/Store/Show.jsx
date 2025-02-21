@@ -1,4 +1,4 @@
-import { Link } from "@inertiajs/react";
+import { Link } from "@inertiajs/react"; // Ensure this import is correct
 
 export default function Show({ store, products }) {
     return (
@@ -22,13 +22,11 @@ export default function Show({ store, products }) {
                         className="p-4 border border-gray-300 rounded-md shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col items-center w-64"
                     >
                         <Link
-                            href={route("products.show", product.id)}
+                            href={route("products.show", product.id)} // Ensure route function is available
                             className="text-center"
                         >
                             <img
-                                src={
-                                    product.image_url || "default_image_url.jpg"
-                                }
+                                src={product.image_url || "default_image_url.jpg"} // Default image
                                 alt={product.ProductName}
                                 className="w-32 h-32 object-cover rounded-full mx-auto"
                             />
@@ -53,7 +51,7 @@ export default function Show({ store, products }) {
             </div>
 
             <Link
-                href={route("stores.index")}
+                href={route("stores.index")} // Ensure route function is available
                 className="block mt-6 text-center text-indigo-600 hover:underline"
             >
                 Back to all stores
