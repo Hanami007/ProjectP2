@@ -35,7 +35,7 @@ class UserFactory extends Factory
             'birthDay' => $this->faker->date(),
             'sex' => $this->faker->randomElement(['Male', 'Female']),
             'address' => $this->faker->address,
-            'role' => $this->faker->randomElement(['admin', 'user', 'customer']),
+            'role' => $this->faker->randomElement(['user', 'stores owner']),
         ];
     }
 
