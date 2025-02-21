@@ -7,7 +7,12 @@ use Inertia\Inertia;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\OrderController;
 
+// เส้นทางสำหรับหน้า Order
+Route::middleware(['auth:sanctum', 'verified'])->get('/orders', [OrderController::class, 'index'])->name('orders.index');
+Route::middleware(['auth:sanctum', 'verified'])->get('/MyProfile', [UserController::class, 'show'])->name('profile.show');
 Route::get('/homepage', [ProductController::class, 'index'])->name('homepage.index');
 
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');

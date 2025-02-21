@@ -177,6 +177,9 @@ export default function AuthenticatedLayout({ header, children }) {
                             </div>
 
                             <div className="mt-3 space-y-1">
+                            <ResponsiveNavLink href={route("orders.index")}>
+
+                                </ResponsiveNavLink>
                                 <ResponsiveNavLink href={route("orders.index")}>
                                     Order
                                 </ResponsiveNavLink>
