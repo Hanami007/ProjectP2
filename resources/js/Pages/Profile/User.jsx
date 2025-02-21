@@ -40,24 +40,6 @@ const User = ({ user }) => {
                             </div>
                         </div>
                     </div>
-
-                    <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8 dark:bg-gray-800">
-                        <div className="max-w-xl">
-                            <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                                Update Password
-                            </h2>
-                            {/* Add your UpdatePasswordForm component here */}
-                        </div>
-                    </div>
-
-                    <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8 dark:bg-gray-800">
-                        <div className="max-w-xl">
-                            <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                                Delete Account
-                            </h2>
-                            {/* Add your DeleteUserForm component here */}
-                        </div>
-                    </div>
                 </div>
             </div>
         </AuthenticatedLayout>

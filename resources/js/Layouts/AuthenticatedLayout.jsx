@@ -70,6 +70,11 @@ export default function AuthenticatedLayout({ header, children }) {
 
                                         <Dropdown.Content>
                                             <Dropdown.Link
+                                                href={route("profile.show")}
+                                            >
+                                                Profile Details
+                                            </Dropdown.Link>
+                                            <Dropdown.Link
                                                 href={route("orders.index")}
                                             >
                                                 Order
@@ -177,8 +182,8 @@ export default function AuthenticatedLayout({ header, children }) {
                             </div>
 
                             <div className="mt-3 space-y-1">
-                            <ResponsiveNavLink href={route("orders.index")}>
-
+                                <ResponsiveNavLink href={route("profile.show")}>
+                                    Profile Details
                                 </ResponsiveNavLink>
                                 <ResponsiveNavLink href={route("orders.index")}>
                                     Order
