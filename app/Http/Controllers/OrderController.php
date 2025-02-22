@@ -1,13 +1,12 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Order;
-use Inertia\Inertia;
-use Illuminate\Support\Facades\Auth;
 use App\Models\OrderDetail;
 use App\Models\Product;
+use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class OrderController extends Controller
 {
@@ -24,6 +23,7 @@ class OrderController extends Controller
             'orders' => $orders
         ]);
     }
+
     public function store(Request $request)
     {
         $user = Auth::user();
@@ -39,16 +39,16 @@ class OrderController extends Controller
         foreach ($orderData as $item) {
             $product = Product::find($item['product_id']);
             if ($product) {
-                $totalAmount += $product->price * $item['quantity'];
+                $totalAmount += $product->Price * $item['quantity'];
             }
         }
 
         // Create the order and include the totalAmount
         $order = Order::create([
             'user_id' => $user->id,
-            'status' => 'pending',
-            'order_date' => now(),
-            'total_amount' => $totalAmount,  // Add this line to set the total amount
+            'OrderStatus' => 'pending',
+            'OrderDate' => now(),
+            'TotalAmount' => $totalAmount,
         ]);
 
         // Create order details
@@ -57,12 +57,17 @@ class OrderController extends Controller
                 'order_id' => $order->id,
                 'product_id' => $item['product_id'],
                 'quantity' => $item['quantity'],
-                'price' => Product::find($item['product_id'])->price,
+                'unit_price' => Product::find($item['product_id'])->Price,
             ]);
         }
 
-        return response()->json(['message' => 'Order placed successfully'], 201);
+        return response()->json(['message' => 'Order placed successfully', 'orderId' => $order->id], 201);
     }
 
-
+    public function showPayment(Order $order)
+    {
+        return Inertia::render('Orders/Payment', [
+            'order' => $order,
+        ]);
+    }
 }

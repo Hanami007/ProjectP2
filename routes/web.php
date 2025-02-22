@@ -9,6 +9,13 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\WalletController;
+
+Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+Route::get('/orders/{order}/payment', [OrderController::class, 'showPayment'])->name('orders.payment');
+
+Route::get('/wallet/topup', [WalletController::class, 'showTopupForm'])->name('wallet.topup');
+Route::post('/wallet/topup', [WalletController::class, 'topup']);
 
 
 Route::get('/products/create', [ProductController::class, 'create'])->name(name: 'products.create');
