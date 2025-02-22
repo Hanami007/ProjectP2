@@ -3,6 +3,8 @@ import { Head } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 
 const User = ({ user }) => {
+    const walletBalance = user.wallet_balance ? parseFloat(user.wallet_balance).toFixed(2) : '0.00';
+
     return (
         <AuthenticatedLayout
             header={
@@ -36,6 +38,18 @@ const User = ({ user }) => {
                                 <div className="flex items-center">
                                     <span className="font-medium text-gray-700 dark:text-gray-300">ที่อยู่:</span>
                                     <span className="ml-2 text-gray-900 dark:text-gray-100">{user.address}</span>
+                                </div>
+                                <div className="flex items-center">
+                                    <span className="font-medium text-gray-700 dark:text-gray-300">ยอดเงินใน Wallet:</span>
+                                    <span className="ml-2 text-gray-900 dark:text-gray-100">฿{walletBalance}</span>
+                                </div>
+                                <div className="flex items-center">
+                                    <span className="font-medium text-gray-700 dark:text-gray-300">วันที่สมัครสมาชิก:</span>
+                                    <span className="ml-2 text-gray-900 dark:text-gray-100">{new Date(user.created_at).toLocaleDateString()}</span>
+                                </div>
+                                <div className="flex items-center">
+                                    <span className="font-medium text-gray-700 dark:text-gray-300">วันที่แก้ไขข้อมูลล่าสุด:</span>
+                                    <span className="ml-2 text-gray-900 dark:text-gray-100">{new Date(user.updated_at).toLocaleDateString()}</span>
                                 </div>
                             </div>
                         </div>

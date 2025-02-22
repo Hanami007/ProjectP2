@@ -79,6 +79,10 @@ export default function AuthenticatedLayout({ header, children }) {
 
                                         <Dropdown.Content>
                                             <Dropdown.Link
+                                                href={route("wallet.topup")}>
+                                                เติมเงินใน Wallet
+                                            </Dropdown.Link>
+                                            <Dropdown.Link
                                                 href={route("profile.show")}
                                             >
                                                 Profile Details
@@ -191,6 +195,9 @@ export default function AuthenticatedLayout({ header, children }) {
                             </div>
 
                             <div className="mt-3 space-y-1">
+                                <ResponsiveNavLink href={route("wallet.topup")}>
+                                    เติมเงินใน Wallet
+                                </ResponsiveNavLink>
                                 <ResponsiveNavLink href={route("profile.show")}>
                                     Profile Details
                                 </ResponsiveNavLink>

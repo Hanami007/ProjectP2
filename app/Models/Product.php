@@ -20,6 +20,10 @@ class Product extends Model
         'id_stores',
     ];
 
+    public function carts()
+    {
+        return $this->hasMany(Cart::class);
+    }
     public function store()
     {
         return $this->belongsTo(Store::class, 'id_stores');

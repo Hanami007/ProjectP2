@@ -59,13 +59,13 @@ const CartItem = ({ item, onQuantityChange }) => {
     );
 };
 
-const CartPage = ({ cartItems }) => {
+const CartPage = ({ cartItems, message }) => {
     const [quantities, setQuantities] = useState(
         Object.fromEntries(cartItems.map(item => [item.product.id, item.quantity]))
     );
 
     const { data, setData, post, processing } = useForm({
-        quantity: quantities
+        quantities: quantities
     });
 
     const handleQuantityChange = (productId, newQuantity) => {
@@ -86,29 +86,33 @@ const CartPage = ({ cartItems }) => {
     };
 
     const handleCheckout = () => {
-        const cartData = Object.entries(quantities).map(([product_id, quantity]) => ({
+        const orderItems = Object.entries(quantities).map(([product_id, quantity]) => ({
             product_id: parseInt(product_id),
             quantity
         }));
 
         post('/orders', {
-            cartUpdates: cartData
+            orderItems: orderItems
         }, {
-            onSuccess: () => {
-                window.location.href = '/orders';
+            onSuccess: (page) => {
+                const orderId = page.props.orderId;
+                window.location.href = `/orders/${orderId}/payment`;
             },
         });
     };
 
     React.useEffect(() => {
-        setData('cartUpdates', quantities);
+        setData('orderItems', Object.entries(quantities).map(([product_id, quantity]) => ({
+            product_id: parseInt(product_id),
+            quantity
+        })));
     }, [quantities]);
 
     if (cartItems.length === 0) {
         return (
             <div className="container mx-auto p-6 text-center">
                 <h1 className="text-3xl font-semibold mb-6">ตะกร้าสินค้า</h1>
-                <p className="text-gray-600">ไม่มีสินค้าในตะกร้า</p>
+                <p className="text-gray-600">{message || 'ไม่มีสินค้าในตะกร้า'}</p>
                 <Link href="/homepage" className="mt-6 text-blue-500 hover:underline">
                     กลับสู่หน้าหลัก
                 </Link>
