@@ -14,7 +14,7 @@ return new class extends Migration
     Schema::create('carts', function (Blueprint $table) {
         $table->id();
         $table->foreignId('user_id')->nullable();
-        $table->foreignId('order_id')->nullable()->constrained('orders')->onDelete('set null');
+        $table->foreignId('id_order')->nullable()->constrained('orders')->onDelete('set null');
         $table->string('session_id')->nullable(); // ใช้ session_id แทน user_id สำหรับผู้ใช้ที่ไม่ได้ล็อกอิน
         $table->foreignId('product_id')->constrained()->onDelete('cascade');
         $table->integer('quantity');
@@ -30,8 +30,8 @@ return new class extends Migration
     public function down()
     {
         Schema::table('carts', function (Blueprint $table) {
-            $table->dropForeign(['order_id']);
-            $table->dropColumn('order_id');
+            $table->dropForeign(['id_order']);
+            $table->dropColumn('id_order');
         });
     }
 };
