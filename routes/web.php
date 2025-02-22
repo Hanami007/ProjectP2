@@ -11,6 +11,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\OrderController;
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/orders', [OrderController::class, 'index'])->name('orders.index');
+Route::middleware(['auth:sanctum', 'verified'])->post('/orders', [OrderController::class, 'store'])->name('orders.store');
 Route::middleware(['auth:sanctum', 'verified'])->get('/profile-detail', [UserController::class, 'show'])->name('profile.show');
 Route::get('/homepage', [ProductController::class, 'index'])->name('homepage.index');
 

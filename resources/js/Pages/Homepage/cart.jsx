@@ -91,11 +91,11 @@ const CartPage = ({ cartItems }) => {
             quantity
         }));
 
-        post('/cart', {
+        post('/orders', {
             cartUpdates: cartData
         }, {
             onSuccess: () => {
-                window.location.href = '/checkout';
+                window.location.href = '/orders';
             },
         });
     };

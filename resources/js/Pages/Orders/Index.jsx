@@ -22,9 +22,43 @@ const Orders = ({ orders }) => {
                             </h1>
                             <div className="space-y-4">
                                 {orders.map((order) => (
-                                    <div key={order.id} className="flex items-center">
-                                        <span className="font-medium text-gray-700 dark:text-gray-300">Order ID:</span>
-                                        <span className="ml-2 text-gray-900 dark:text-gray-100">{order.id}</span>
+                                    <div key={order.id} className="flex flex-col space-y-4">
+                                        <div className="flex items-center">
+                                            <span className="font-medium text-gray-700 dark:text-gray-300">Order ID:</span>
+                                            <span className="ml-2 text-gray-900 dark:text-gray-100">{order.id}</span>
+                                        </div>
+                                        <div className="flex items-center">
+                                            <span className="font-medium text-gray-700 dark:text-gray-300">สถานะคำสั่งซื้อ:</span>
+                                            <span className="ml-2 text-gray-900 dark:text-gray-100">{order.OrderStatus}</span>
+                                        </div>
+                                        <div className="flex items-center">
+                                            <span className="font-medium text-gray-700 dark:text-gray-300">วันที่สั่งซื้อ:</span>
+                                            <span className="ml-2 text-gray-900 dark:text-gray-100">{order.OrderDate}</span>
+                                        </div>
+
+                                        {/* แสดงข้อมูลผู้ส่ง */}
+                                        <div className="mt-4">
+                                            {order.delivery && (
+                                                <>
+                                                    <div className="flex items-center">
+                                                        <span className="font-medium text-gray-700 dark:text-gray-300">ชื่อผู้ส่ง:</span>
+                                                        <span className="ml-2 text-gray-900 dark:text-gray-100">{order.delivery.ShipperName}</span>
+                                                    </div>
+                                                    <div className="flex items-center">
+                                                        <span className="font-medium text-gray-700 dark:text-gray-300">เบอร์โทรผู้ส่ง:</span>
+                                                        <span className="ml-2 text-gray-900 dark:text-gray-100">{order.delivery.Phone}</span>
+                                                    </div>
+                                                    <div className="flex items-center">
+                                                        <span className="font-medium text-gray-700 dark:text-gray-300">หมายเลขติดตาม:</span>
+                                                        <span className="ml-2 text-gray-900 dark:text-gray-100">{order.delivery.TrackingNumber}</span>
+                                                    </div>
+                                                    <div className="flex items-center">
+                                                        <span className="font-medium text-gray-700 dark:text-gray-300">สถานะการจัดส่ง:</span>
+                                                        <span className="ml-2 text-gray-900 dark:text-gray-100">{order.delivery.DeliveryStatus}</span>
+                                                    </div>
+                                                </>
+                                            )}
+                                        </div>
                                     </div>
                                 ))}
                             </div>
