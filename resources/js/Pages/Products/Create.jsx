@@ -1,122 +1,214 @@
 import React, { useState } from 'react';
-import { Head, router } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 
-const ProductCreate = () => {
-    const [formData, setFormData] = useState({
-        name: '',
-        price: '',
-        description: '',
-        image: null,
+export default function Create({ auth, stores }) {
+    const { data, setData, post, processing, errors } = useForm({
         id_stores: '',
+        ProductName: '',
+        Price: '',
+        Stock: '',
+        ProductType: '',
+        ProductStatus: '',
+        ProductDescription: '',
+        ProductImage: null,
     });
 
-    const [preview, setPreview] = useState(null);
-    const [processing, setProcessing] = useState(false);
-
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
-
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        setFormData({ ...formData, image: file });
-
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            setPreview(reader.result);
-        };
-        if (file) {
-            reader.readAsDataURL(file);
-        }
-    };
+    const [previewImage, setPreviewImage] = useState(null);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log("🚀 ส่งข้อมูลไปยัง Backend"); // เพิ่มบรรทัดนี้
-        console.log(route('products.store'));
+        post(route('products.store'));
+    };
 
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        setData('ProductImage', file);
 
-        const form = new FormData();
-        form.append('name', formData.name);
-        form.append('price', formData.price);
-        form.append('description', formData.description);
-        form.append('image', formData.image);
-        form.append('id_stores', formData.id_stores);
-
-        router.post(route('products.store'), form, {
-            forceFormData: true, // บังคับใช้ FormData
-            onFinish: () => setProcessing(false),
-        });
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setPreviewImage(reader.result);
+            };
+            reader.readAsDataURL(file);
+        } else {
+            setPreviewImage(null);
+        }
     };
 
     return (
-        <AuthenticatedLayout header={<h2 className="text-xl font-semibold">เพิ่มสินค้าใหม่</h2>}>
-            <Head title="เพิ่มสินค้า" />
-            <div className="max-w-2xl mx-auto p-6 bg-white shadow-md rounded-lg">
-                <form onSubmit={handleSubmit} className="space-y-4" encType="multipart/form-data">
-                    {/* ชื่อสินค้า */}
-                    <div>
-                        <label className="block text-gray-700 font-medium">ชื่อสินค้า</label>
-                        <input
-                            type="text"
-                            name="name"
-                            value={formData.name}
-                            onChange={handleChange}
-                            required
-                            className="w-full mt-1 p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300"
-                        />
-                    </div>
+        <AuthenticatedLayout
+            user={auth.user}
+            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Create New Product</h2>}
+        >
+            <Head title="Create Product" />
 
-                    {/* ราคา */}
-                    <div>
-                        <label className="block text-gray-700 font-medium">ราคา</label>
-                        <input
-                            type="number"
-                            name="price"
-                            value={formData.price}
-                            onChange={handleChange}
-                            required
-                            className="w-full mt-1 p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300"
-                        />
-                    </div>
+            <div className="py-12">
+                <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                    <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                        <div className="p-6 bg-white border-b border-gray-200">
+                            <form onSubmit={handleSubmit} className="space-y-6">
+                                {/* Store Selection */}
+                                <div>
+                                    <label htmlFor="id_stores" className="block text-sm font-medium text-gray-700">
+                                        เลือกร้านค้า
+                                    </label>
+                                    <select
+                                        id="id_stores"
+                                        value={data.id_stores}
+                                        onChange={(e) => setData('id_stores', e.target.value)}
+                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                        required
+                                    >
+                                        <option value="">กรุณาเลือกร้านค้า</option>
+                                        {stores.map((store) => (
+                                            <option key={store.id} value={store.id}>
+                                                {store.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    {errors.id_stores && <div className="text-red-500 text-sm mt-1">{errors.id_stores}</div>}
+                                </div>
 
-                    {/* รายละเอียด */}
-                    <div>
-                        <label className="block text-gray-700 font-medium">รายละเอียด</label>
-                        <textarea
-                            name="description"
-                            value={formData.description}
-                            onChange={handleChange}
-                            required
-                            className="w-full mt-1 p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300"
-                        ></textarea>
-                    </div>
+                                {/* Product Name */}
+                                <div>
+                                    <label htmlFor="ProductName" className="block text-sm font-medium text-gray-700">
+                                        ชื่อสินค้า
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="ProductName"
+                                        value={data.ProductName}
+                                        onChange={(e) => setData('ProductName', e.target.value)}
+                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                        required
+                                    />
+                                    {errors.ProductName && <div className="text-red-500 text-sm mt-1">{errors.ProductName}</div>}
+                                </div>
 
-                    {/* อัปโหลดรูปภาพ */}
-                    <div>
-                        <label className="block text-gray-700 font-medium">อัปโหลดรูปภาพ</label>
-                        <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleFileChange}
-                            className="w-full mt-1 p-2 border border-gray-300 rounded-lg"
-                        />
-                        {preview && <img src={preview} alt="Preview" className="mt-2 h-32 object-cover rounded-lg" />}
-                    </div>
+                                {/* Price */}
+                                <div>
+                                    <label htmlFor="Price" className="block text-sm font-medium text-gray-700">
+                                        ราคา
+                                    </label>
+                                    <input
+                                        type="number"
+                                        id="Price"
+                                        value={data.Price}
+                                        onChange={(e) => setData('Price', e.target.value)}
+                                        step="0.01"
+                                        min="0"
+                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                        required
+                                    />
+                                    {errors.Price && <div className="text-red-500 text-sm mt-1">{errors.Price}</div>}
+                                </div>
 
-                    {/* ปุ่มบันทึก */}
-                    <button
-                        type="submit"
-                        disabled={processing}
-                        className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition disabled:bg-gray-400"
-                    >
-                        {processing ? 'กำลังบันทึก...' : 'บันทึกสินค้า'}
-                    </button>
-                </form>
+                                {/* Stock */}
+                                <div>
+                                    <label htmlFor="Stock" className="block text-sm font-medium text-gray-700">
+                                        จำนวนสินค้า
+                                    </label>
+                                    <input
+                                        type="number"
+                                        id="Stock"
+                                        value={data.Stock}
+                                        onChange={(e) => setData('Stock', e.target.value)}
+                                        min="0"
+                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                        required
+                                    />
+                                    {errors.Stock && <div className="text-red-500 text-sm mt-1">{errors.Stock}</div>}
+                                </div>
+
+                                {/* Product Type */}
+                                <div>
+                                    <label htmlFor="ProductType" className="block text-sm font-medium text-gray-700">
+                                        ประเภทสินค้า
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="ProductType"
+                                        value={data.ProductType}
+                                        onChange={(e) => setData('ProductType', e.target.value)}
+                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                        required
+                                    />
+                                    {errors.ProductType && <div className="text-red-500 text-sm mt-1">{errors.ProductType}</div>}
+                                </div>
+
+                                {/* Product Status */}
+                                <div>
+                                    <label htmlFor="ProductStatus" className="block text-sm font-medium text-gray-700">
+                                        สถานะสินค้า
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="ProductStatus"
+                                        value={data.ProductStatus}
+                                        onChange={(e) => setData('ProductStatus', e.target.value)}
+                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                        required
+                                    />
+                                    {errors.ProductStatus && <div className="text-red-500 text-sm mt-1">{errors.ProductStatus}</div>}
+                                </div>
+
+                                {/* Product Description */}
+                                <div>
+                                    <label htmlFor="ProductDescription" className="block text-sm font-medium text-gray-700">
+                                        คำอธิบายสินค้า
+                                    </label>
+                                    <textarea
+                                        id="ProductDescription"
+                                        value={data.ProductDescription}
+                                        onChange={(e) => setData('ProductDescription', e.target.value)}
+                                        rows="4"
+                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                    />
+                                    {errors.ProductDescription && <div className="text-red-500 text-sm mt-1">{errors.ProductDescription}</div>}
+                                </div>
+
+                                {/* Product Image */}
+                                <div>
+                                    <label htmlFor="ProductImage" className="block text-sm font-medium text-gray-700">
+                                        รูปภาพสินค้า
+                                    </label>
+                                    <input
+                                        type="file"
+                                        id="ProductImage"
+                                        onChange={handleImageChange}
+                                        accept="image/*"
+                                        className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+                                    />
+                                    {errors.ProductImage && <div className="text-red-500 text-sm mt-1">{errors.ProductImage}</div>}
+
+                                    {/* Image Preview */}
+                                    {previewImage && (
+                                        <div className="mt-2">
+                                            <img
+                                                src={previewImage}
+                                                alt="Preview"
+                                                className="w-32 h-32 object-cover rounded-md"
+                                            />
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Submit Button */}
+                                <div>
+                                    <button
+                                        type="submit"
+                                        disabled={processing}
+                                        className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-gray-400"
+                                    >
+                                        {processing ? 'กำลังสร้าง...' : 'สร้างสินค้า'}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
         </AuthenticatedLayout>
     );
-};
-
-export default ProductCreate;
+}

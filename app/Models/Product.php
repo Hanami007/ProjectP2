@@ -15,7 +15,7 @@ class Product extends Model
         'Stock',
         'ProductType',
         'ProductStatus',
-        'ProductImage',
+        'image',
         'ProductDescription',
         'id_stores',
     ];

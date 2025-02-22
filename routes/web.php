@@ -18,11 +18,11 @@ Route::get('/wallet/topup', [WalletController::class, 'showTopupForm'])->name('w
 Route::post('/wallet/topup', [WalletController::class, 'topup']);
 
 
-Route::get('/products/create', [ProductController::class, 'create'])->name(name: 'products.create');
+Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
 Route::get('/homepage', [ProductController::class, 'index'])->name('homepage.index');
 Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
 Route::get('/products/{id}/edit', [ProductController::class, 'edit'])->name('products.edit');
-Route::post('/products/store', [ProductController::class, 'store'])->name('products.store');
+Route::post('/products', [ProductController::class, 'store'])->name('products.store');
 Route::patch('/products/{product}', [ProductController::class, 'update'])->name('products.update');
 Route::delete('products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
 
@@ -37,8 +37,6 @@ Route::delete('/cart/{id}', [CartController::class, 'remove'])->name('cart.remov
 Route::get('/cart/count', [CartController::class, 'count'])->name('cart.count');
 Route::post('/cart/increment', [CartController::class, 'increment'])->name('cart.increment');
 Route::post('/cart/decrement', [CartController::class, 'decrement'])->name('cart.decrement');
-
-
 
 Route::post('/reviews', [ReviewController::class, 'store'])->middleware('auth');
 Route::get('/reviews/{productId}', [ReviewController::class, 'index']);
