@@ -19,6 +19,7 @@ return new class extends Migration {
                 $table->string('ProductStatus')->default('available'); // Changed from 'productStatus' to 'ProductStatus'
                 $table->string('ProductImage')->nullable(); // Changed from 'productImage' to 'ProductImage'
                 $table->text('ProductDescription')->nullable(); // Changed from 'productDescription' to 'ProductDescription'
+                $table->integer('ProductRating')->default(0); // Changed from 'productRating' to 'ProductRating'
                 $table->timestamps();
             });
         }
