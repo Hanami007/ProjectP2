@@ -8,7 +8,7 @@ return new class extends Migration {
     public function up() {
         Schema::create('order_details', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_order')->constrained('orders')->onDelete('cascade'); // Changed from 'id_order' to 'id_order'
+            $table->foreignId('order_id')->constrained('orders')->onDelete('cascade'); // Changed from 'id_order' to 'id_order'
             $table->foreignId('ProductID')->constrained('products')->onDelete('cascade'); // Changed from 'productID' to 'ProductID'
             $table->integer('Quantity'); // Changed from 'quantity' to 'Quantity'
             $table->decimal('UnitPrice', 10, 2); // Changed from 'unitPrice' to 'UnitPrice'

@@ -10,7 +10,7 @@ class Payment extends Model
     protected $table = 'payments';
 
     protected $fillable = [
-        'id_order',
+        'order_id',
         'PaymentMethod',
         'PaymentStatus',
         'PaymentDate',

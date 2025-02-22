@@ -57,6 +57,11 @@ const Wallet = ({ user }) => {
                                 </div>
                             </form>
                         </div>
+                        <div className="mt-8 text-right">
+                            <h2 className="text-2xl font-semibold text-gray-700 dark:text-gray-300">
+                                ยอดเงินคงเหลือ: ฿{user.wallet_balance}
+                            </h2>
+                        </div>
                     </div>
                 </div>
             </div>

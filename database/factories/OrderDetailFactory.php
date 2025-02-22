@@ -14,7 +14,7 @@ class OrderDetailFactory extends Factory
     public function definition()
     {
         return [
-            'id_order' => Order::factory(), // Changed from 'id_order' to 'id_order'
+            'order_id' => Order::factory(), // Changed from 'id_order' to 'id_order'
             'ProductID' => Product::factory(), // Changed from 'productID' to 'ProductID'
             'Quantity' => $this->faker->numberBetween(1, 5), // Changed from 'quantity' to 'Quantity'
             'UnitPrice' => $this->faker->randomFloat(2, 10, 500), // Changed from 'unitPrice' to 'UnitPrice'

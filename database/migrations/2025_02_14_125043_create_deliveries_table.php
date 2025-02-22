@@ -8,7 +8,7 @@ return new class extends Migration {
     public function up() {
         Schema::create('deliveries', function (Blueprint $table) {
             $table->id('DeliveryID');
-            $table->foreignId('id_order')->constrained('orders')->onDelete('cascade');
+            $table->foreignId('order_id')->constrained('orders')->onDelete('cascade');
             $table->string('ShipperName');
             $table->string('Email')->nullable();
             $table->string('Phone')->nullable();

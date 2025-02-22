@@ -8,7 +8,7 @@ return new class extends Migration {
     public function up() {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_order')->constrained('orders')->onDelete('cascade');
+            $table->foreignId('order_id')->constrained('orders')->onDelete('cascade');
             $table->string('PaymentMethod'); // Changed from 'paymentMethod' to 'PaymentMethod'
             $table->string('PaymentStatus')->default('pending'); // Changed from 'paymentStatus' to 'PaymentStatus'
             $table->timestamp('PaymentDate')->useCurrent(); // Changed from 'paymentDate' to 'PaymentDate'
