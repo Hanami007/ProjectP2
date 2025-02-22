@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { Link, Head } from "@inertiajs/react";
 import axios from "axios";
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import FloatingCart from "@/components/FloatingCart";
+import { useNavigate } from "react-router-dom";  // แก้ไขการนำเข้าเป็น "react-router-dom"
+
 
 const Homepage = ({ products }) => {
     const [processing, setProcessing] = useState(false);
@@ -91,6 +94,7 @@ const Homepage = ({ products }) => {
                     </div>
                 </div>
             </div>
+            <FloatingCart />
         </AuthenticatedLayout>
     );
 };
