@@ -10,10 +10,18 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\OrderController;
 
+
+Route::get('/products/create', [ProductController::class, 'create'])->name(name: 'products.create');
+Route::get('/homepage', [ProductController::class, 'index'])->name('homepage.index');
+Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
+Route::get('/products/{id}/edit', [ProductController::class, 'edit'])->name('products.edit');
+Route::post('/products/store', [ProductController::class, 'store'])->name('products.store');
+Route::patch('/products/{product}', [ProductController::class, 'update'])->name('products.update');
+Route::delete('products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
+
 Route::middleware(['auth:sanctum', 'verified'])->get('/orders', [OrderController::class, 'index'])->name('orders.index');
 Route::middleware(['auth:sanctum', 'verified'])->post('/orders', [OrderController::class, 'store'])->name('orders.store');
 Route::middleware(['auth:sanctum', 'verified'])->get('/profile-detail', [UserController::class, 'show'])->name('profile.show');
-Route::get('/homepage', [ProductController::class, 'index'])->name('homepage.index');
 
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
@@ -23,11 +31,7 @@ Route::get('/cart/count', [CartController::class, 'count'])->name('cart.count');
 Route::post('/cart/increment', [CartController::class, 'increment'])->name('cart.increment');
 Route::post('/cart/decrement', [CartController::class, 'decrement'])->name('cart.decrement');
 
-Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
-Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
-Route::post('products', [ProductController::class, 'store'])->name('products.store');
-Route::patch('/products/{product}', [ProductController::class, 'update'])->name('products.update');
-Route::delete('products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
+
 
 Route::post('/reviews', [ReviewController::class, 'store'])->middleware('auth');
 Route::get('/reviews/{productId}', [ReviewController::class, 'index']);
