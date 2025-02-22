@@ -30,7 +30,6 @@ class UserFactory extends Factory
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
             'phone' => $this->faker->phoneNumber,
-            'wallet' => $this->faker->randomFloat(2, 100, 1000),
             'picture' => $this->faker->imageUrl(),
             'birthDay' => $this->faker->date(),
             'sex' => $this->faker->randomElement(['Male', 'Female']),
