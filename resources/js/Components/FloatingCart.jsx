@@ -7,7 +7,7 @@ const FloatingCart = () => {
       href="/cart"
       className="fixed bottom-5 right-5 bg-blue-500 text-white p-3 rounded-full shadow-lg cursor-pointer hover:bg-blue-600 transition"
     >
-      <ShoppingCart size={24} />
+      <ShoppingCart size={30} />
     </Link>
   );
 };

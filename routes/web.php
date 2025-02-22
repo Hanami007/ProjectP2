@@ -24,6 +24,10 @@ Route::post('/cart/increment', [CartController::class, 'increment'])->name('cart
 Route::post('/cart/decrement', [CartController::class, 'decrement'])->name('cart.decrement');
 
 Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
+Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
+Route::post('products', [ProductController::class, 'store'])->name('products.store');
+Route::patch('/products/{product}', [ProductController::class, 'update'])->name('products.update');
+Route::delete('products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
 
 Route::post('/reviews', [ReviewController::class, 'store'])->middleware('auth');
 Route::get('/reviews/{productId}', [ReviewController::class, 'index']);
