@@ -32,25 +32,37 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
+            'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'phone' => 'nullable|string|max:255',
+            'birthday' => 'nullable|date',
+            'sex' => 'nullable|string|max:10',
+            'address' => 'nullable|string|max:255',
             'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
+        // เก็บไฟล์ภาพถ้ามี
+        $picturePath = null;
         if ($request->hasFile('picture')) {
-            $path = $request->file('picture')->store('profile_pictures', 'public'); // บันทึกไฟล์
-            $validatedData['picture'] = $path;
+            $picturePath = $request->file('picture')->store('profile_pictures', 'public');
         }
 
+        // ใช้ Hash::make เพื่อเข้ารหัสรหัสผ่าน
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'picture' => $validatedData['picture'] ?? null,
+            'password' => Hash::make($request->password),  // แฮชรหัสผ่านที่นี่
+            'phone' => $request->phone,  // แก้ไขจาก $request->hone เป็น $request->phone
+            'birthday' => $request->birthday,
+            'sex' => $request->sex,
+            'address' => $request->address,
+            'picture' => $picturePath,  // เพิ่มการเก็บ path ของรูปภาพ
         ]);
 
+        // trigger event for registered user
         event(new Registered($user));
 
+        // login user after registration
         Auth::login($user);
 
         return redirect(route('dashboard', absolute: false));

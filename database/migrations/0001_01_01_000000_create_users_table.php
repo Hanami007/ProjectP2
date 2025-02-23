@@ -12,9 +12,8 @@ return new class extends Migration {
             $table->string('Name');
             $table->string('Email')->unique();
             $table->string('Phone')->nullable();
-            $table->string('Password');
+            $table->string('password');
             $table->string('Picture')->nullable();
-            $table->date('BirthDay')->nullable();
             $table->string('Sex')->nullable();
             $table->text('Address')->nullable();
             $table->string('Role')->default('customer');

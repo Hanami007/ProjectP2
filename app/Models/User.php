@@ -19,10 +19,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'picture',
+        'name', 'email', 'password', 'phone', 'sex', 'address', 'picture',
     ];
 
     /**
@@ -45,7 +42,6 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'wallet_balance' => 'decimal:2', // เพิ่มการ cast คอลัมน์ wallet_balance
         ];
     }
     public function store()
