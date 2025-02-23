@@ -11,11 +11,16 @@ class CartController extends Controller
     public function index()
     {
         $user = Auth::user();
+
+        if (!$user) {
+            return redirect()->route('login');
+        }
+
         $cartItems = Cart::where('user_id', $user->id)->with('product')->get();
 
         return Inertia::render('Homepage/Cart', [
             'cartItems' => $cartItems,
-            'message' => 'ไม่มีสินค้าในตะกร้า'
+            'message' => 'ไม่มีสินค้าในตะกร้า',
         ]);
     }
     public function store(Request $request)

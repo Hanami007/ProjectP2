@@ -13,7 +13,6 @@ return new class extends Migration {
             $table->string('Email')->unique();
             $table->string('Phone')->nullable();
             $table->string('Password');
-            $table->decimal('Wallet', 10, 2)->default(0);
             $table->string('Picture')->nullable();
             $table->date('BirthDay')->nullable();
             $table->string('Sex')->nullable();
@@ -44,7 +43,13 @@ return new class extends Migration {
     }
 
     public function down(): void {
+        Schema::table('stores', function (Blueprint $table) {
+            $table->dropForeign(['user_id']);
+        });
         Schema::table('orders', function (Blueprint $table) {
+            $table->dropForeign(['user_id']);
+        });
+        Schema::table('sessions', function (Blueprint $table) {
             $table->dropForeign(['user_id']);
         });
         Schema::dropIfExists('users');
