@@ -32,7 +32,7 @@ const OrderPending = ({ orders }) => {
                                         <td className="border px-6 py-3 text-center">{order.payment_status}</td>
                                         <td className="border px-6 py-3 text-center">
                                             <Link
-                                                href={`/orders/${order.id}`}
+                                                href={`/orders/orderdetail/${order.id}`}
                                                 className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition-all"
                                             >
                                                 View Details

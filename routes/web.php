@@ -28,7 +28,7 @@ Route::get('/orders/{order_id}', [OrderController::class, 'status'])->name('orde
 Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
 Route::get('/orders/{order}/payment', [OrderController::class, 'showPayment'])->name('orders.payment');
 Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
-Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
+Route::get('/orders/orderdetail/{id}', [OrderController::class, 'show'])->name('orders.show');
 Route::get('/wallet/topup', [WalletController::class, 'showTopupForm'])->name('wallet.topup');
 
 Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
