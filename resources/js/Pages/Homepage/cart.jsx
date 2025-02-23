@@ -59,11 +59,10 @@ const CartItem = ({ item, onQuantityChange }) => {
     );
 };
 
-const CartPage = ({ cartItems, message, userWallet }) => {
+const CartPage = ({ cartItems, message }) => {
     const [quantities, setQuantities] = useState(
         Object.fromEntries(cartItems.map(item => [item.product.id, item.quantity]))
     );
-    const [paymentMethod, setPaymentMethod] = useState('');
     const { data, setData, post, processing } = useForm({
         quantities: quantities
     });
@@ -86,15 +85,10 @@ const CartPage = ({ cartItems, message, userWallet }) => {
     };
 
     const handleCheckout = () => {
-        if (!paymentMethod) {
-            alert('กรุณาเลือกประเภทการชำระเงิน');
-            return;
-        }
+        const totalAmount = parseFloat(calculateTotal());
 
-        const totalAmount = calculateTotal();
-
-        if (paymentMethod === 'wallet' && totalAmount > userWallet) {
-            alert('ยอดเงินในกระเป๋าเงินของคุณไม่เพียงพอ');
+        if (isNaN(totalAmount) || totalAmount <= 0) {
+            alert('Total amount is invalid.');
             return;
         }
 
@@ -106,7 +100,6 @@ const CartPage = ({ cartItems, message, userWallet }) => {
         post('/orders', {
             orderItems: orderItems,
             totalAmount: totalAmount,
-            paymentMethod: paymentMethod
         }, {
             onSuccess: (page) => {
                 const orderId = page.props.orderId;
@@ -146,34 +139,7 @@ const CartPage = ({ cartItems, message, userWallet }) => {
                     />
                 ))}
 
-                <div className="mt-6">
-                    <h3 className="text-xl font-semibold">เลือกประเภทการชำระเงิน:</h3>
-                    <div className="mt-2">
-                        <label className="inline-flex items-center">
-                            <input
-                                type="radio"
-                                className="form-radio"
-                                name="paymentMethod"
-                                value="cash_on_delivery"
-                                onChange={(e) => setPaymentMethod(e.target.value)}
-                            />
-                            <span className="ml-2">ชำระเงินปลายทาง</span>
-                        </label>
-                        <label className="inline-flex items-center ml-6">
-                            <input
-                                type="radio"
-                                className="form-radio"
-                                name="paymentMethod"
-                                value="wallet"
-                                onChange={(e) => setPaymentMethod(e.target.value)}
-                            />
-                            <span className="ml-2">ชำระผ่าน D1M3 Wallet (ยอดเงิน: ฿{userWallet})</span>
-                        </label>
-                    </div>
-                </div>
-
                 <div className="text-right mt-6">
-                    <h3 className="text-xl font-semibold">ยอดรวม: ฿{calculateTotal()}</h3>
                     <button
                         onClick={handleCheckout}
                         disabled={processing}

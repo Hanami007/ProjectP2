@@ -19,12 +19,10 @@ class OrderController extends Controller
             return redirect()->route('login');
         }
 
-        $cartItems = Cart::where('user_id', $user->id)->with('product')->get();
+        $orders = Order::where('user_id', $user->id)->with('orderDetails.product')->get();
 
-        return Inertia::render('Homepage/Cart', [
-            'cartItems' => $cartItems,
-            'message' => 'ไม่มีสินค้าในตะกร้า',
-            'userWallet' => $user->wallet_balance,
+        return Inertia::render('Orders/Index', [
+            'orders' => $orders,
         ]);
     }
 
@@ -33,48 +31,60 @@ class OrderController extends Controller
         $user = Auth::user();
 
         if (!$user) {
-            return response()->json(['message' => 'User not authenticated'], 401);
+            return redirect()->route('login');
         }
 
         $orderData = $request->input('orderItems');
-        $totalAmount = $request->input('totalAmount');
-        $paymentMethod = $request->input('paymentMethod');
 
-        // Check if orderData is not null or empty
-        if (is_null($orderData) || empty($orderData)) {
-            return response()->json(['message' => 'No items in the cart'], 400);
+        // ตรวจสอบว่ามีสินค้าใน orderItems หรือไม่
+        if (empty($orderData) || !is_array($orderData)) {
+            return Inertia::render('Homepage/Cart', [
+                'cartItems' => Cart::where('user_id', $user->id)->with('product')->get(),
+                'message' => 'No items in the cart',
+            ]);
         }
 
-        // Check if payment method is selected
-        if (is_null($paymentMethod) || empty($paymentMethod)) {
-            return response()->json(['message' => 'Payment method not selected'], 400);
+        // คำนวณ totalAmount จากสินค้าใน orderItems
+        $totalAmount = collect($orderData)->sum(function ($item) {
+            $product = Product::find($item['product_id']);
+            return $product ? ($product->price * $item['quantity']) : 0;
+        });
+
+        // ตรวจสอบว่าราคาถูกต้องหรือไม่
+        if ($totalAmount <= 0) {
+            return Inertia::render('Homepage/Cart', [
+                'cartItems' => Cart::where('user_id', $user->id)->with('product')->get(),
+                'message' => 'Total amount is invalid',
+            ]);
         }
 
-        // Check if user has enough balance in wallet
-        if ($paymentMethod === 'wallet' && $totalAmount > $user->wallet_balance) {
-            return response()->json(['message' => 'Insufficient balance in wallet'], 400);
-        }
-
-        // Create the order and include the totalAmount
+        // สร้างคำสั่งซื้อ (Order)
         $order = Order::create([
             'user_id' => $user->id,
-            'OrderStatus' => $paymentMethod === 'wallet' ? 'complete' : 'pending',
             'OrderDate' => now(),
             'TotalAmount' => $totalAmount,
         ]);
 
+        // สร้าง Order Details
+        foreach ($orderData as $item) {
+            $product = Product::find($item['product_id']);
 
-        // Deduct amount from wallet if payment method is wallet
-        if ($paymentMethod === 'wallet') {
-            $user->wallet_balance -= $totalAmount;
-            $user->save();
+            if ($product) {
+                OrderDetail::create([
+                    'order_id' => $order->id,
+                    'product_id' => $product->id,
+                    'quantity' => $item['quantity'],
+                    'unit_price' => $product->price,
+                ]);
+            }
         }
 
-        // Clear the cart after creating the order
+        // ล้างตะกร้าสินค้าหลังจากสร้างคำสั่งซื้อ
         Cart::where('user_id', $user->id)->delete();
 
-        return response()->json(['message' => 'Order placed successfully', 'orderId' => $order->id], 201);
+        return redirect()->route('orders.showPayment', ['order' => $order->id]);
     }
+
     public function showPayment(Order $order)
     {
         return Inertia::render('Orders/Payment', [
