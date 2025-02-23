@@ -7,17 +7,17 @@ use Inertia\Inertia;
 class OrderController extends Controller
 {
     public function showPendingOrders()
-{
-    // ดึงข้อมูลคำสั่งซื้อที่มีสถานะเป็น 'pending'
-    $orders = Order::with(['user', 'products']) // ดึงข้อมูลผู้ใช้และสินค้า
-        ->where('OrderStatus', 'pending')
-        ->get();
+    {
+        // ดึงข้อมูลคำสั่งซื้อที่มีสถานะเป็น 'pending'
+        $orders = Order::with(['user', 'products']) // ดึงข้อมูลผู้ใช้และสินค้า
+            ->where('OrderStatus', 'pending')
+            ->get();
 
-    // ส่งข้อมูลไปยังหน้า React
-    return Inertia::render('store/OrderPending', [
-        'orders' => $orders
-    ]);
-}
+        // ส่งข้อมูลไปยังหน้า React
+        return Inertia::render('store/OrderPending', [
+            'orders' => $orders
+        ]);
+    }
 
     public function status($order_id)
     {
@@ -30,9 +30,9 @@ class OrderController extends Controller
     $order = Order::with('user', 'order_details.product') // ใช้ eager loading ดึงข้อมูลจาก product
         ->find($id);
 
-    if (!$order) {
-        return response()->json(['message' => 'Order not found'], 404);
-    }
+        if (!$order) {
+            return response()->json(['message' => 'Order not found'], 404);
+        }
 
     return Inertia::render('Orders/OrderDetail', [
         'order' => [
@@ -58,8 +58,8 @@ class OrderController extends Controller
                 'name' => $order->user->Name
             ]
         ]
-    ]);
-}
+        ]);
+    }
 
 
 
@@ -82,19 +82,19 @@ class OrderController extends Controller
     }
 
     public function showDetail($id)
-{
-    $order = Order::with(['user', 'orderDetails.product'])->findOrFail($id);
+    {
+        $order = Order::with(['user', 'orderDetails.product'])->findOrFail($id);
 
-    return Inertia::render('OrderDetail', [
-        'order' => $order
-    ]);
-}
-public function index()
-{
-    $orders = Order::with('order_details.product')->get(); // ดึงข้อมูลคำสั่งซื้อทั้งหมดพร้อมกับรายละเอียดสินค้า
+        return Inertia::render('OrderDetail', [
+            'order' => $order
+        ]);
+    }
+    public function index()
+    {
+        $orders = Order::with('order_details.product')->get(); // ดึงข้อมูลคำสั่งซื้อทั้งหมดพร้อมกับรายละเอียดสินค้า
 
-    return Inertia::render('Orders/OrderPending ', [
-        'orders' => $orders
-    ]);
-}
+        return Inertia::render('Orders/OrderPending ', [
+            'orders' => $orders
+        ]);
+    }
 }

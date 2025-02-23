@@ -101,11 +101,6 @@ export default function AuthenticatedLayout({ header, children }) {
                                                 Profile Details
                                             </Dropdown.Link>
                                             <Dropdown.Link
-                                                href={route("orders.index")}
-                                            >
-                                                Order
-                                            </Dropdown.Link>
-                                            <Dropdown.Link
                                                 href={route("profile.edit")}
                                             >
                                                 Setting Profile
