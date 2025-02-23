@@ -3,7 +3,18 @@ import { Link } from "@inertiajs/react"; // Ensure this import is correct
 export default function Show({ store, products }) {
     return (
         <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
-            <h1 className="text-2xl font-bold mb-6 text-center">
+            {/* รูปภาพร้านค้า */}
+            <img
+                src={
+                    store.Picture
+                        ? `/storage/${store.Picture}`
+                        : "/images/default_image_url.jpg" // ใช้ path ที่ถูกต้องสำหรับรูป default
+                }
+                alt={store.StoreName} // เปลี่ยนจาก alt={store.Picture} เป็น alt={store.StoreName}
+                className="w-32 h-32 object-cover rounded-full mx-auto"
+            />
+
+            <h1 className="text-2xl font-bold mb-4 text-center">
                 {store.StoreName}
             </h1>
             <p className="text-center text-gray-700 mb-2">{store.Address}</p>
@@ -26,7 +37,11 @@ export default function Show({ store, products }) {
                             className="text-center"
                         >
                             <img
-                                src={product.ProductImage || "default_image_url.jpg"} // Default image
+                                src={
+                                    product.ProductImage
+                                        ? `/storage/${product.ProductImage}`
+                                        : "default_image_url.jpg"
+                                }
                                 alt={product.ProductName}
                                 className="w-32 h-32 object-cover rounded-full mx-auto"
                             />

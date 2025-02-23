@@ -56,6 +56,17 @@ const Mystore = ({ store, products }) => {
                             {store ? (
                                 <div className="space-y-4">
                                     <div className="flex items-center">
+                                        <img
+                                            src={
+                                                store.Picture
+                                                    ? `/storage/${store.Picture}`
+                                                    : "/images/default_image_url.jpg" // ใช้ path ที่ถูกต้องสำหรับรูป default
+                                            }
+                                            alt={store.StoreName} // เปลี่ยนจาก alt={store.Picture} เป็น alt={store.StoreName}
+                                            className="w-32 h-32 object-cover rounded-full mx-auto"
+                                        />
+                                    </div>
+                                    <div className="flex items-center">
                                         <span className="font-medium text-gray-700 dark:text-gray-300">
                                             ชื่อร้านค้า:
                                         </span>

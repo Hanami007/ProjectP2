@@ -20,6 +20,7 @@ class Store extends Model
         'OpenDate',
         'Stock',
         'StoreStatus',
+        "Picture",
         'user_id',
     ];
 

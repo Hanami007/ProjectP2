@@ -55,7 +55,9 @@ const ProductDetail = ({ product, initialCartCount }) => {
                 {/* Product Image */}
                 <div className="bg-white shadow-lg rounded-lg p-4 flex justify-center">
                     <img
-                        src={product.ProductImage || "default_image_url.jpg"}
+                        src={product.ProductImage  ?
+                            `/storage/${product.ProductImage }`
+                            : "default_image_url.jpg"}
                         alt={product.ProductName}
                     />
                 </div>
@@ -101,9 +103,11 @@ const ProductDetail = ({ product, initialCartCount }) => {
                     className="inline-block"
                 >
                     <img
-                        src={product.store.Picture || "default_store_image.jpg"}
-                        alt={product.store.StoreName}
-                        className="w-32 h-32 mx-auto object-cover rounded-full border-4 border-gray-300 hover:shadow-lg transition"
+                        src={product.store.Picture
+                            ? `/storage/${product.store.Picture}`
+                            : "/images/default_image_url.jpg"} // ใช้ path ที่ถูกต้องสำหรับรูป default
+                        alt={product.store.StoreName} // เปลี่ยนจาก alt={store.Picture} เป็น alt={store.StoreName}
+                        className="w-32 h-32 object-cover rounded-full mx-auto"
                     />
                 </Link>
                 <div className="mt-6">
@@ -146,11 +150,12 @@ const ProductDetail = ({ product, initialCartCount }) => {
                                     >
                                         <img
                                             src={
-                                                item.ProductImage ||
-                                                "default_product.jpg"
+                                                item.ProductImage
+                                                    ? `/storage/${item.ProductImage}`
+                                                    : "default_image_url.jpg"
                                             }
                                             alt={item.ProductName}
-                                            className="w-24 h-24 mx-auto object-cover rounded-full border-2 border-gray-300"
+                                            className="w-32 h-32 object-cover rounded-full mx-auto"
                                         />
                                         <p className="mt-2 text-gray-900 font-semibold">
                                             {item.ProductName}

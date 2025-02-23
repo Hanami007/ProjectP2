@@ -45,7 +45,13 @@ class StoreController extends Controller
             'ownerName' => 'required|string|max:255',
             'phoneNumber' => 'required|string|max:20',
             'address' => 'required|string|max:500',
+            'Picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
+        $imagePath = null;
+        if ($request->hasFile('Picture')) {
+            $imagePath = $request->file('Picture')->store('store_images', 'public');
+        }
 
         try {
             $store = Store::create([
@@ -56,6 +62,7 @@ class StoreController extends Controller
                 'user_id' => Auth::id(),
                 'Rating' => 0,
                 'OpenDate' => now(),
+                'Picture' => $imagePath,
             ]);
 
             return redirect()
@@ -148,6 +155,6 @@ class StoreController extends Controller
                 ->with('error', 'เกิดข้อผิดพลาดในการลบสินค้า: ' . $e->getMessage());
         }
     }
-    
+
 
 }
