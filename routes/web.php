@@ -8,8 +8,18 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\OrderController;
 use App\Http\Controllers\WalletController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\OrderController;
+
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::post('/cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
+Route::delete('/cart/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
+
+Route::get('/payment/{order_id}', [PaymentController::class, 'paymentPage'])->name('payment.page');
+Route::post('/payment/{order_id}/confirm', [PaymentController::class, 'confirmPayment'])->name('payment.confirm');
+
+Route::get('/order/{order_id}', [OrderController::class, 'status'])->name('order.status');
 
 Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
 Route::get('/orders/{order}/payment', [OrderController::class, 'showPayment'])->name('orders.payment');
@@ -71,4 +81,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
