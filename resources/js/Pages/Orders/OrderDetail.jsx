@@ -49,7 +49,7 @@ const OrderDetail = ({ order }) => {
                                     <td className="border px-6 py-3">{detail.product?.ProductName || 'Unknown'}</td>
                                     <td className="border px-6 py-3 font-semibold text-gray-700">{detail.Quantity}</td>
                                     <td className="border px-6 py-3 text-blue-600 font-medium">
-                                        ${detail.UnitPrice.toFixed(2)}
+                                        ${detail.UnitPrice.toFixed(2)} {/* ใช้ UnitPrice ที่เป็นราคาของสินค้า */}
                                     </td>
                                     <td className="border px-6 py-3 text-green-600 font-semibold">
                                         ${(detail.Quantity * detail.UnitPrice).toFixed(2)}
