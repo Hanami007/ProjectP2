@@ -57,6 +57,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                         >
                                             Order Pending
                                         </NavLink>
+
                                     </>
                                 ) : (
                                     <NavLink

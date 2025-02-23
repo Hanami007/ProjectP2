@@ -14,7 +14,7 @@ class OrderController extends Controller
             ->get();
 
         // ส่งข้อมูลไปยังหน้า React
-        return Inertia::render('store/OrderPending', [
+        return Inertia::render('Orders/OrderPending', [
             'orders' => $orders
         ]);
     }
@@ -58,16 +58,6 @@ class OrderController extends Controller
                 'name' => $order->user->Name
             ]
         ]
-        ]);
-    }
-
-
-
-    public function pendingOrders()
-    {
-        $orders = Order::where('OrderStatus', 'pending')->get();
-        return Inertia::render('Orders/OrderPending', [
-            'orders' => $orders,
         ]);
     }
 
