@@ -1,17 +1,16 @@
+import React, { useState, useEffect } from "react";
+import { Link, usePage } from "@inertiajs/react";
 import ApplicationLogo from "@/Components/ApplicationLogo";
 import Dropdown from "@/Components/Dropdown";
 import NavLink from "@/Components/NavLink";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
-import { Link, usePage } from "@inertiajs/react";
-import { useState, useEffect } from "react";
 import axios from "axios";
 
 export default function AuthenticatedLayout({ header, children }) {
     const { auth } = usePage().props;
     const user = auth ? auth.user : null;
 
-    const [showingNavigationDropdown, setShowingNavigationDropdown] =
-        useState(false);
+    const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
     const [hasStore, setHasStore] = useState(false);
 
     useEffect(() => {
@@ -95,16 +94,15 @@ export default function AuthenticatedLayout({ header, children }) {
                                         </Dropdown.Trigger>
 
                                         <Dropdown.Content>
-                                            <Dropdown.Link
-                                                href={route("profile.show")}
-                                            >
+                                            <Dropdown.Link href={route("profile.show")}>
                                                 Profile Details
                                             </Dropdown.Link>
-                                            <Dropdown.Link
-                                                href={route("profile.edit")}
-                                            >
+                                            <Dropdown.Link href={route("profile.edit")}>
                                                 Setting Profile
                                             </Dropdown.Link>
+                                            <Dropdown.Link href={route("profile.orders")}>
+                                                User Orders
+                                            </Dropdown.Link> {/* เพิ่มลิงก์ไปยังหน้า UserOrders */}
                                             <Dropdown.Link
                                                 href={route("logout")}
                                                 method="post"
@@ -218,8 +216,8 @@ export default function AuthenticatedLayout({ header, children }) {
                                 <ResponsiveNavLink href={route("profile.show")}>
                                     Profile Details
                                 </ResponsiveNavLink>
-                                <ResponsiveNavLink href={route("orders.index")}>
-                                    Order
+                                <ResponsiveNavLink href={route("profile.orders")}>
+                                    User Orders
                                 </ResponsiveNavLink>
                                 <ResponsiveNavLink href={route("profile.edit")}>
                                     Setting Profile

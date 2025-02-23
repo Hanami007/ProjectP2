@@ -97,4 +97,23 @@ class OrderController extends Controller
             'orders' => $orders
         ]);
     }
+
+    public function confirmReceipt($orderId)
+    {
+        // ค้นหาออเดอร์ที่ต้องการ
+        $order = Order::find($orderId);
+
+        // ตรวจสอบว่าออเดอร์มีอยู่และสถานะการส่งสินค้ายังไม่ได้ยืนยัน
+        if ($order) {
+            foreach ($order->deliveries as $delivery) {
+                // อัพเดตสถานะการส่งสินค้าเป็น 'received'
+                $delivery->update(['delivery_status' => 'received']);
+            }
+
+            // ส่งผลลัพธ์กลับไปยัง frontend
+            return response()->json(['message' => 'Receipt confirmed successfully.']);
+        }
+
+        return response()->json(['message' => 'Order not found.'], 404);
+    }
 }

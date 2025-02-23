@@ -24,7 +24,6 @@ Route::post('/cart/checkout', [CartController::class, 'checkout'])->name('cart.c
 Route::get('/payment/{order_id}', [PaymentController::class, 'paymentPage'])->name('payment.page');
 Route::post('/payment/{order_id}/confirm', [PaymentController::class, 'confirmPayment'])->name('payment.confirm');
 
-Route::get('/orders/pending', [OrderController::class, 'pendingOrders'])->name('orders.pending');
 Route::put('/orders/{order}/update', [OrderController::class, 'updateOrderStatus'])->name('orders.update');
 Route::get('/orders/{order}/status', [OrderController::class, 'status'])->name('orders.status');
 Route::get('/orders/{order_id}', [OrderController::class, 'status'])->name('order.status');
@@ -69,11 +68,11 @@ Route::get('/', function () {
         'phpVersion' => PHP_VERSION,
     ]);
 });
-
+Route::get('/profile/orders', [ProfileController::class, 'userOrders'])->name('profile.orders');
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
-
+Route::post('/orders/{orderId}/confirm-receipt', [OrderController::class, 'confirmReceipt']);
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

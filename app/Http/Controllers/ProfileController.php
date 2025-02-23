@@ -60,4 +60,17 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+
+    public function userOrders()
+    {
+        $user = Auth::user();
+        // ดึงข้อมูลคำสั่งซื้อและรายละเอียดสินค้าที่ผู้ใช้ทำ
+        $orders = $user->orders()->with('orderDetails.product', 'deliveries')->get();
+
+        return Inertia::render('Profile/UserOrders', [
+            'orders' => $orders,
+        ]);
+    }
+
+    
 }
