@@ -14,10 +14,10 @@ class PaymentFactory extends Factory
     {
         return [
             'order_id' => Order::factory(),
-            'PaymentMethod' => $this->faker->randomElement(['Credit Card', 'PayPal', 'Bank Transfer']), // Changed from 'paymentMethod' to 'PaymentMethod'
-            'PaymentStatus' => $this->faker->randomElement(['Pending', 'Completed']), // Changed from 'paymentStatus' to 'PaymentStatus'
-            'PaymentDate' => $this->faker->dateTimeThisYear(), // Changed from 'paymentDate' to 'PaymentDate'
-            'PaymentAmount' => $this->faker->randomFloat(2, 50, 1000), // Changed from 'paymentAmount' to 'PaymentAmount'
+            'payment_method' => $this->faker->randomElement(['Credit Card', 'PayPal', 'Bank Transfer']), // Changed from 'paymentMethod' to 'PaymentMethod'
+            'payment_status' => $this->faker->randomElement(['Pending', 'Completed']), // Changed from 'paymentStatus' to 'PaymentStatus'
+            'Payment_Date' => $this->faker->dateTimeThisYear(), // Changed from 'paymentDate' to 'PaymentDate'
+            'Payment_Amount' => $this->faker->randomFloat(2, 50, 1000), // Changed from 'paymentAmount' to 'PaymentAmount'
         ];
     }
 }
