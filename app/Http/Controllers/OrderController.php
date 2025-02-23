@@ -6,6 +6,18 @@ use Inertia\Inertia;
 
 class OrderController extends Controller
 {
+    public function showPendingOrders()
+{
+    // ดึงข้อมูลคำสั่งซื้อที่มีสถานะเป็น 'pending'
+    $orders = Order::with(['user', 'products']) // ดึงข้อมูลผู้ใช้และสินค้า
+        ->where('OrderStatus', 'pending')
+        ->get();
+
+    // ส่งข้อมูลไปยังหน้า React
+    return Inertia::render('store/OrderPending', [
+        'orders' => $orders
+    ]);
+}
 
     public function status($order_id)
     {

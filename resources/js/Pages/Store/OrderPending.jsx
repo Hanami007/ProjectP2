@@ -27,9 +27,9 @@ const OrderPending = ({ orders }) => {
                         orders.map((order) => (
                             <tr key={order.id}>
                                 <td className="border px-4 py-2">{order.id}</td>
-                                <td className="border px-4 py-2">{order.customer_name}</td>
-                                <td className="border px-4 py-2">${order.total_amount}</td>
-                                <td className="border px-4 py-2">{order.status}</td>
+                                <td className="border px-4 py-2">{order.user_id}</td>
+                                <td className="border px-4 py-2">${order.TotalAmount}</td>
+                                <td className="border px-4 py-2">{order.OrderStatus}</td>
                                 <td className="border px-4 py-2">
                                     {order.status === 'pending' && (
                                         <button
