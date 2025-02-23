@@ -6,6 +6,7 @@ use Inertia\Inertia;
 
 class OrderController extends Controller
 {
+
     public function status($order_id)
     {
         $order = Order::with('order_details.product')->findOrFail($order_id);

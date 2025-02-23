@@ -23,6 +23,7 @@ Route::get('/order/{order_id}', [OrderController::class, 'status'])->name('order
 
 Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
 Route::get('/orders/{order}/payment', [OrderController::class, 'showPayment'])->name('orders.payment');
+Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
 
 Route::get('/wallet/topup', [WalletController::class, 'showTopupForm'])->name('wallet.topup');
 Route::post('/wallet/topup', [WalletController::class, 'topup']);

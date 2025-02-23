@@ -3,15 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\OrderDetail;
 use App\Models\Order;
 
 class OrderDetailController extends Controller
 {
-    // ดึงข้อมูล OrderDetail ตาม order_id
     public function getOrderDetails($orderId)
     {
-        $order = Order::with('details.product')->find($orderId);
+        $order = Order::with('orderDetails.product')->find($orderId);
 
         if (!$order) {
             return response()->json(['message' => 'ไม่พบคำสั่งซื้อ'], 404);
@@ -19,15 +17,16 @@ class OrderDetailController extends Controller
 
         return response()->json([
             'order_id' => $order->id,
-            'total' => $order->total,
-            'status' => $order->status,
-            'items' => $order->details->map(function ($detail) {
+            'total' => $order->TotalAmount, // ตรวจสอบให้แน่ใจว่าใช้ชื่อฟิลด์ที่ถูกต้อง
+            'status' => $order->OrderStatus,
+            'items' => $order->orderDetails->map(function ($detail) {
                 return [
-                    'product_name' => $detail->product->name,
+                    'product_name' => $detail->product->ProductName ?? 'Unknown',
                     'quantity' => $detail->quantity,
-                    'price' => $detail->price
+                    'price' => (float) $detail->price
                 ];
             })
         ]);
     }
 }
+
