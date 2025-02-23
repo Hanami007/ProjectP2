@@ -8,14 +8,14 @@ const CartItem = ({ item, onQuantityChange }) => {
     const handleIncrement = () => {
         const newQuantity = itemQuantity + 1;
         setItemQuantity(newQuantity);
-        onQuantityChange(item.product.id, newQuantity);
+        onQuantityChange(item.product.id, newQuantity); // ส่ง product_id และจำนวนใหม่
     };
 
     const handleDecrement = () => {
         if (itemQuantity > 1) {
             const newQuantity = itemQuantity - 1;
             setItemQuantity(newQuantity);
-            onQuantityChange(item.product.id, newQuantity);
+            onQuantityChange(item.product.id, newQuantity); // ส่ง product_id และจำนวนใหม่
         }
     };
 
@@ -66,52 +66,58 @@ const CartItem = ({ item, onQuantityChange }) => {
 };
 
 const CartPage = ({ cartItems }) => {
+    // สร้าง state quantities จาก cartItems
     const [quantities, setQuantities] = useState(
         Object.fromEntries(cartItems.map((item) => [item.product.id, item.quantity]))
     );
-    const [paymentMethod, setPaymentMethod] = useState("cod"); // เริ่มต้นด้วยปลายทาง
+    const [paymentMethod, setPaymentMethod] = useState("cod");
 
+    // ตั้งค่า useForm
     const { data, setData, post, processing } = useForm({
-        cartUpdates: quantities,
+        cartUpdates: [],
         payment_method: paymentMethod,
     });
 
+    // ฟังก์ชันจัดการการเปลี่ยนแปลงจำนวนสินค้า
     const handleQuantityChange = (productId, newQuantity) => {
-        setQuantities((prev) => ({
-            ...prev,
+        setQuantities((prevQuantities) => ({
+            ...prevQuantities,
             [productId]: newQuantity,
         }));
     };
 
+    // คำนวณราคารวมโดยอิงจาก product_id และราคาสินค้า
     const calculateTotal = () => {
         return cartItems
-            .reduce(
-                (sum, item) =>
-                    sum + parseFloat(item.product.Price) * quantities[item.product.id],
-                0
-            )
+            .reduce((sum, item) => {
+                const quantity = quantities[item.product.id] || item.quantity;
+                return sum + parseFloat(item.product.Price) * quantity;
+            }, 0)
             .toFixed(2);
     };
 
-    const handleCheckout = () => {
+    // อัพเดต data เมื่อ quantities หรือ paymentMethod เปลี่ยน
+    useEffect(() => {
         const cartData = Object.entries(quantities).map(([product_id, quantity]) => ({
             product_id: parseInt(product_id),
             quantity,
         }));
-
-        post("/cart/checkout", {
+        setData({
             cartUpdates: cartData,
             payment_method: paymentMethod,
         });
-    };
-
-    useEffect(() => {
-        setData((prev) => ({
-            ...prev,
-            cartUpdates: quantities,
-            payment_method: paymentMethod,
-        }));
     }, [quantities, paymentMethod]);
+
+    // ฟังก์ชันดำเนินการชำระเงิน
+    const handleCheckout = () => {
+        post("/cart/checkout", {
+            onSuccess: (page) => {
+                if (page.props.order_id) {
+                    Inertia.visit(`/orders/${page.props.order_id}`);
+                }
+            },
+        });
+    };
 
     if (cartItems.length === 0) {
         return (
