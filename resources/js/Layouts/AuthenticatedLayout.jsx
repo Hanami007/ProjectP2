@@ -41,13 +41,32 @@ export default function AuthenticatedLayout({ header, children }) {
                                 >
                                     Homepage
                                 </NavLink>
-                                <NavLink
-                                    href={hasStore ? route("mystore") : route("stores.create")}
-                                    active={route().current(hasStore ? "mystore" : "stores.create")}
-                                    className="text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
-                                >
-                                    {hasStore ? "My Store" : "Create Store"}
-                                </NavLink>
+                                {hasStore ? (
+                                    <>
+                                        <NavLink
+                                            href={route("mystore")}
+                                            active={route().current("mystore")}
+                                            className="text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
+                                        >
+                                            My Store
+                                        </NavLink>
+                                        <NavLink
+                                            href={route("orders.pending")}
+                                            active={route().current("orders.pending")}
+                                            className="text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
+                                        >
+                                            Order Pending
+                                        </NavLink>
+                                    </>
+                                ) : (
+                                    <NavLink
+                                        href={route("stores.create")}
+                                        active={route().current("stores.create")}
+                                        className="text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
+                                    >
+                                        Create Store
+                                    </NavLink>
+                                )}
                             </div>
                         </div>
 
@@ -156,13 +175,32 @@ export default function AuthenticatedLayout({ header, children }) {
                         >
                             Homepage
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink
-                            href={hasStore ? route("mystore") : route("stores.create")}
-                            active={route().current(hasStore ? "mystore" : "stores.create")}
-                            className="text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
-                        >
-                            {hasStore ? "My Store" : "Create Store"}
-                        </ResponsiveNavLink>
+                        {hasStore ? (
+                            <>
+                                <ResponsiveNavLink
+                                    href={route("mystore")}
+                                    active={route().current("mystore")}
+                                    className="text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
+                                >
+                                    My Store
+                                </ResponsiveNavLink>
+                                <ResponsiveNavLink
+                                    href={route("orders.pending")}
+                                    active={route().current("orders.pending")}
+                                    className="text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
+                                >
+                                    Order Pending
+                                </ResponsiveNavLink>
+                            </>
+                        ) : (
+                            <ResponsiveNavLink
+                                href={route("stores.create")}
+                                active={route().current("stores.create")}
+                                className="text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
+                            >
+                                Create Store
+                            </ResponsiveNavLink>
+                        )}
                     </div>
 
                     {user && (

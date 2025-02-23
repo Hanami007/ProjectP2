@@ -66,10 +66,10 @@ export default function Show({ store, products }) {
             </div>
 
             <Link
-                href={route("stores.index")} // Ensure route function is available
+                href={route("homepage.index")} // เปลี่ยนเป็น route หน้า homepage
                 className="block mt-6 text-center text-indigo-600 hover:underline"
             >
-                Back to all stores
+                Back to Homepage
             </Link>
         </div>
     );
