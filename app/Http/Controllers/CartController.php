@@ -51,9 +51,9 @@ class CartController extends Controller
         foreach ($cartItems as $item) {
             OrderDetail::create([
                 'order_id' => $order->id,
-                'ProductID' => $item->product_id,
-                'Quantity' => $item->quantity,
-                'UnitPrice' => $item->product->Price,
+                'product_id' => $item->product_id,
+                'quantity' => $item->quantity,
+                'unitprice' => $item->product->Price,
             ]);
         }
 
