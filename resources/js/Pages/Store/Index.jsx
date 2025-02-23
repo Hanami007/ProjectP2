@@ -1,59 +1,55 @@
-import React from "react";
-import { Link, Head } from "@inertiajs/react";
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+// resources/js/Pages/Orders/OrderPending.jsx
+import React from 'react';
+import { Inertia } from '@inertiajs/inertia-react';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 
-export default function Index({ stores }) {
+const OrderPending = ({ orders, auth }) => {
+    // ฟังก์ชันที่ใช้ในการอัปเดตสถานะคำสั่งซื้อ
+    const handleOrderUpdate = (orderId) => {
+        Inertia.put(`/orders/${orderId}/update`, { status: 'completed' });
+    };
+
     return (
-        <AuthenticatedLayout
-            header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                    All Stores
-                </h2>
-            }
-        >
-            <Head title="All Stores" />
-
-            <div className="py-12">
-                <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
-                        <div className="p-6 text-gray-900 dark:text-gray-100">
-                            <h1 className="text-3xl font-semibold text-center mb-8">
-                                รายการร้านค้า
-                            </h1>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-                                {stores.map((store) => (
-                                    <div
-                                        key={store.id}
-                                        className="bg-white shadow-lg rounded-lg overflow-hidden transform hover:scale-105 transition-transform duration-300"
-                                    >
-                                        {/* แสดงรูปภาพร้านค้า */}
-                                        <img
-                                            src={
-                                                store.Picture
-                                                    ? `/storage/${store.Picture}`
-                                                    : "/images/default_image_url.jpg"  // ใช้ path ที่ถูกต้องสำหรับรูป default
-                                            }
-                                            alt={store.StoreName}  // เปลี่ยนจาก alt={store.Picture} เป็น alt={store.StoreName}
-                                            className="w-32 h-32 object-cover rounded-full mx-auto"
-                                        />
-                                        <div className="p-4">
-                                            <h3 className="text-lg font-semibold text-gray-900">
-                                                {store.StoreName}
-                                            </h3>
-                                            <Link
-                                                href={route("stores.show", store.id)}
-                                                className="mt-4 inline-block bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition-colors duration-200"
-                                            >
-                                                ดูรายละเอียด
-                                            </Link>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
+        <AuthenticatedLayout user={auth.user}>
+            <div className="max-w-6xl mx-auto bg-white shadow-lg rounded-lg p-6">
+                <h1 className="text-center text-2xl font-bold mb-6 text-gray-700">
+                    รายการคำสั่งซื้อที่รอดำเนินการ
+                </h1>
+                <div className="overflow-x-auto">
+                    <table className="w-full border-collapse border border-gray-200">
+                        <thead>
+                            <tr className="bg-gray-100">
+                                <th className="px-4 py-3 border border-gray-300 text-left">Order ID</th>
+                                <th className="px-4 py-3 border border-gray-300 text-left">Customer</th>
+                                <th className="px-4 py-3 border border-gray-300 text-center">Total Amount</th>
+                                <th className="px-4 py-3 border border-gray-300 text-center">สถานะการจัดส่ง</th>
+                                <th className="px-4 py-3 border border-gray-300 text-center">สถานะการชำระเงิน</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {orders.length > 0 ? (
+                                orders.map((order) => (
+                                    <tr key={order.id} className="hover:bg-gray-50 transition">
+                                        <td className="border px-4 py-3">{order.id}</td>
+                                        <td className="border px-4 py-3">{order.user_id}</td>
+                                        <td className="border px-4 py-3 text-center">${order.TotalAmount}</td>
+                                        <td className="border px-4 py-3 text-center">{order.OrderStatus}</td>
+                                        <td className="border px-4 py-3 text-center">{order.payment_status}</td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="5" className="text-center py-4 text-gray-500">
+                                        ไม่มีคำสั่งซื้อที่รอดำเนินการ
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </AuthenticatedLayout>
     );
-}
+};
+
+export default OrderPending;

@@ -40,10 +40,6 @@ const User = ({ user }) => {
                                     <span className="ml-2 text-gray-900 dark:text-gray-100">{user.address}</span>
                                 </div>
                                 <div className="flex items-center">
-                                    <span className="font-medium text-gray-700 dark:text-gray-300">ยอดเงินใน Wallet:</span>
-                                    <span className="ml-2 text-gray-900 dark:text-gray-100">฿{walletBalance}</span>
-                                </div>
-                                <div className="flex items-center">
                                     <span className="font-medium text-gray-700 dark:text-gray-300">วันที่สมัครสมาชิก:</span>
                                     <span className="ml-2 text-gray-900 dark:text-gray-100">{new Date(user.created_at).toLocaleDateString()}</span>
                                 </div>

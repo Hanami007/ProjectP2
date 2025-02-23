@@ -42,13 +42,6 @@ export default function AuthenticatedLayout({ header, children }) {
                                     Homepage
                                 </NavLink>
                                 <NavLink
-                                    href={route("stores.index")}
-                                    active={route().current("stores.index")}
-                                    className="text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
-                                >
-                                    Store
-                                </NavLink>
-                                <NavLink
                                     href={hasStore ? route("mystore") : route("stores.create")}
                                     active={route().current(hasStore ? "mystore" : "stores.create")}
                                     className="text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
@@ -78,10 +71,6 @@ export default function AuthenticatedLayout({ header, children }) {
                                         </Dropdown.Trigger>
 
                                         <Dropdown.Content>
-                                            <Dropdown.Link
-                                                href={route("wallet.topup")}>
-                                                เติมเงินใน Wallet
-                                            </Dropdown.Link>
                                             <Dropdown.Link
                                                 href={route("profile.show")}
                                             >
@@ -168,13 +157,6 @@ export default function AuthenticatedLayout({ header, children }) {
                             Homepage
                         </ResponsiveNavLink>
                         <ResponsiveNavLink
-                            href={route("stores.index")}
-                            active={route().current("stores.index")}
-                            className="text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
-                        >
-                            Store
-                        </ResponsiveNavLink>
-                        <ResponsiveNavLink
                             href={hasStore ? route("mystore") : route("stores.create")}
                             active={route().current(hasStore ? "mystore" : "stores.create")}
                             className="text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
@@ -195,9 +177,6 @@ export default function AuthenticatedLayout({ header, children }) {
                             </div>
 
                             <div className="mt-3 space-y-1">
-                                <ResponsiveNavLink href={route("wallet.topup")}>
-                                    เติมเงินใน Wallet
-                                </ResponsiveNavLink>
                                 <ResponsiveNavLink href={route("profile.show")}>
                                     Profile Details
                                 </ResponsiveNavLink>
