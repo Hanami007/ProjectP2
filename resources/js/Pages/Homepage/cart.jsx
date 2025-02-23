@@ -23,7 +23,7 @@ const CartItem = ({ item, onQuantityChange }) => {
     return (
         <div className="flex items-center justify-between border-b py-4">
             <div className="flex items-center space-x-4">
-                <img
+            <img
                     src={item.product.ProductImage ? `/storage/${item.product.ProductImage}`
                     : "default_image_url.jpg"}
                     alt={item.product.ProductName}
@@ -60,12 +60,13 @@ const CartItem = ({ item, onQuantityChange }) => {
     );
 };
 
-const CartPage = ({ cartItems, message }) => {
+const CartPage = ({ cartItems }) => {
     const [quantities, setQuantities] = useState(
         Object.fromEntries(cartItems.map(item => [item.product.id, item.quantity]))
     );
+
     const { data, setData, post, processing } = useForm({
-        quantities: quantities
+        quantity: quantities
     });
 
     const handleQuantityChange = (productId, newQuantity) => {
@@ -86,41 +87,29 @@ const CartPage = ({ cartItems, message }) => {
     };
 
     const handleCheckout = () => {
-        const totalAmount = parseFloat(calculateTotal());
-
-        if (isNaN(totalAmount) || totalAmount <= 0) {
-            alert('Total amount is invalid.');
-            return;
-        }
-
-        const orderItems = Object.entries(quantities).map(([product_id, quantity]) => ({
+        const cartData = Object.entries(quantities).map(([product_id, quantity]) => ({
             product_id: parseInt(product_id),
             quantity
         }));
 
-        post('/orders', {
-            orderItems: orderItems,
-            totalAmount: totalAmount,
+        post('/cart', {
+            cartUpdates: cartData
         }, {
-            onSuccess: (page) => {
-                const orderId = page.props.orderId;
-                window.location.href = `/orders/${orderId}/payment`;
+            onSuccess: () => {
+                window.location.href = '/checkout';
             },
         });
     };
 
     React.useEffect(() => {
-        setData('orderItems', Object.entries(quantities).map(([product_id, quantity]) => ({
-            product_id: parseInt(product_id),
-            quantity
-        })));
+        setData('cartUpdates', quantities);
     }, [quantities]);
 
     if (cartItems.length === 0) {
         return (
             <div className="container mx-auto p-6 text-center">
                 <h1 className="text-3xl font-semibold mb-6">ตะกร้าสินค้า</h1>
-                <p className="text-gray-600">{message || 'ไม่มีสินค้าในตะกร้า'}</p>
+                <p className="text-gray-600">ไม่มีสินค้าในตะกร้า</p>
                 <Link href="/homepage" className="mt-6 text-blue-500 hover:underline">
                     กลับสู่หน้าหลัก
                 </Link>
@@ -141,6 +130,7 @@ const CartPage = ({ cartItems, message }) => {
                 ))}
 
                 <div className="text-right mt-6">
+                    <h3 className="text-xl font-semibold">ยอดรวม: ฿{calculateTotal()}</h3>
                     <button
                         onClick={handleCheckout}
                         disabled={processing}
