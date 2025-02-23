@@ -27,7 +27,8 @@ class OrderController extends Controller
 
     public function show($id)
 {
-    $order = Order::with('user', 'order_details.product')->find($id); // โหลดความสัมพันธ์กับ 'user'
+    $order = Order::with('user', 'order_details.product') // ใช้ eager loading ดึงข้อมูลจาก product
+        ->find($id);
 
     if (!$order) {
         return response()->json(['message' => 'Order not found'], 404);
@@ -37,26 +38,29 @@ class OrderController extends Controller
         'order' => [
             'id' => $order->id,
             'user_id' => $order->user_id,
-            'TotalAmount' => (float) $order->TotalAmount, // แปลงเป็น float
+            'TotalAmount' => (float) $order->TotalAmount,
             'OrderStatus' => $order->OrderStatus,
             'payment_status' => $order->payment_status,
             'orderDetails' => $order->order_details->map(function ($detail) {
+                // ดึงราคาจาก products
+                $product = $detail->product; // ดึงข้อมูล product ที่เชื่อมโยงกับ order_detail
                 return [
                     'id' => $detail->id,
                     'product_id' => $detail->product_id,
                     'Quantity' => $detail->quantity,
-                    'UnitPrice' => (float) $detail->price, // แปลงเป็น float
+                    'UnitPrice' => (float) $product->Price, // ดึงราคาจาก table product
                     'product' => [
-                        'ProductName' => $detail->product->ProductName ?? 'Unknown'
+                        'ProductName' => $product->ProductName ?? 'Unknown' // ดึงชื่อสินค้าจาก product
                     ]
                 ];
             }),
             'user' => [
-                'name' => $order->user->Name // ส่งข้อมูลชื่อผู้ใช้
+                'name' => $order->user->Name
             ]
         ]
     ]);
 }
+
 
 
     public function pendingOrders()
