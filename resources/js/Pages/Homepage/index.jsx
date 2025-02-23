@@ -69,7 +69,7 @@ const Homepage = ({ products }) => {
                     className="bg-white shadow-lg rounded-lg overflow-hidden transform hover:scale-105 transition-transform duration-300"
                   >
                     <img
-                      src={product.image_url || "default_image_url.jpg"}
+                      src={product.ProductImage || "default_image_url.jpg"}
                       alt={product.ProductName}
                       className="w-full h-64 object-cover"
                     />

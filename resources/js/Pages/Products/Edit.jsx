@@ -1,29 +1,21 @@
-import React, { useState, useEffect } from "react";
-import { Head, useForm } from "@inertiajs/react";
+import React from "react";
+import { Head, useForm, router } from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 
 const EditProduct = ({ store, product }) => {
     const { data, setData, patch, processing } = useForm({
-        name: product.name,
-        price: product.price,
-        description: product.description,
+        ProductName: product.ProductName, // ปรับให้ตรงกับ Laravel
+        Price: product.Price,
+        ProductDescription: product.ProductDescription,
     });
 
     const handleEditProduct = (e) => {
         e.preventDefault();
 
-        const formData = {
-            name: data.name,
-            price: parseFloat(data.price),
-            description: data.description,
-        };
-
         // ส่งข้อมูลไปยัง Laravel สำหรับการแก้ไขสินค้า
-        patch(route('products.update', product.id), {
-            data: formData,
-            onSuccess: () => {
-                // แสดงข้อความสำเร็จ หรือเปลี่ยนเส้นทางหลังจากแก้ไขสินค้า
-            },
+        patch(route("products.update", product.id), {
+            data, // ใช้ data ตรงๆ ไม่ต้องห่อใน object อีกที
+            onSuccess: () => router.visit(route("stores.show", store.id)), // ใช้ router.visit() แทน navigate
         });
     };
 
@@ -43,9 +35,9 @@ const EditProduct = ({ store, product }) => {
                                     <label className="block text-gray-700 dark:text-gray-300">ชื่อสินค้า</label>
                                     <input
                                         type="text"
-                                        name="name"
-                                        value={data.name}
-                                        onChange={(e) => setData('name', e.target.value)}
+                                        name="ProductName"
+                                        value={data.ProductName}
+                                        onChange={(e) => setData("ProductName", e.target.value)}
                                         className="w-full px-4 py-2 border rounded-md dark:bg-gray-700 dark:text-gray-300"
                                         required
                                     />
@@ -54,9 +46,9 @@ const EditProduct = ({ store, product }) => {
                                     <label className="block text-gray-700 dark:text-gray-300">ราคา</label>
                                     <input
                                         type="number"
-                                        name="price"
-                                        value={data.price}
-                                        onChange={(e) => setData('price', e.target.value)}
+                                        name="Price"
+                                        value={data.Price}
+                                        onChange={(e) => setData("Price", e.target.value)}
                                         className="w-full px-4 py-2 border rounded-md dark:bg-gray-700 dark:text-gray-300"
                                         required
                                     />
@@ -64,13 +56,17 @@ const EditProduct = ({ store, product }) => {
                                 <div className="mb-4">
                                     <label className="block text-gray-700 dark:text-gray-300">รายละเอียด</label>
                                     <textarea
-                                        name="description"
-                                        value={data.description}
-                                        onChange={(e) => setData('description', e.target.value)}
+                                        name="ProductDescription"
+                                        value={data.ProductDescription}
+                                        onChange={(e) => setData("ProductDescription", e.target.value)}
                                         className="w-full px-4 py-2 border rounded-md dark:bg-gray-700 dark:text-gray-300"
                                     ></textarea>
                                 </div>
-                                <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:bg-blue-700" disabled={processing}>
+                                <button
+                                    type="submit"
+                                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:bg-blue-700"
+                                    disabled={processing}
+                                >
                                     แก้ไขสินค้า
                                 </button>
                             </form>

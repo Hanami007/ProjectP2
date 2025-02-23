@@ -6,6 +6,7 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class StoreController extends Controller
 {
@@ -30,26 +31,20 @@ class StoreController extends Controller
 
     public function show($id)
     {
-        // ดึงข้อมูลร้านค้าตาม ID
         $store = Store::findOrFail($id);
-
-        // ดึงข้อมูลสินค้าที่เกี่ยวข้องกับร้านนี้
         $products = Product::where('id_stores', $id)->get();
-
-        // ส่งข้อมูลไปยังหน้าแสดงรายละเอียดร้านค้า
         return Inertia::render('Store/Show', [
             'store' => $store,
             'products' => $products
         ]);
     }
-
     public function store(Request $request)
     {
         $validated = $request->validate([
             'storeName' => 'required|string|max:255',
             'ownerName' => 'required|string|max:255',
-            'phoneNumber' => 'required|string|max:20',  // จำกัดความยาวที่เหมาะสม
-            'address' => 'required|string|max:500',     // จำกัดความยาวที่เหมาะสม
+            'phoneNumber' => 'required|string|max:20',
+            'address' => 'required|string|max:500',
         ]);
 
         try {
@@ -76,11 +71,11 @@ class StoreController extends Controller
 
     public function mystore(Request $request)
     {
-        // ดึงข้อมูลร้านค้าที่ผู้ใช้เป็นเจ้าของ
         $store = Store::where('user_id', $request->user()->id)->first();
-
+        $products = $store ? Product::where('id_stores', $store->id)->get() : [];
         return Inertia::render('Store/Mystore', [
             'store' => $store,
+            'products' => $products,
         ]);
     }
 
@@ -91,14 +86,68 @@ class StoreController extends Controller
 
     public function destroy($id)
     {
-        $store = Store::findOrFail($id);
+        try {
+            $store = Store::findOrFail($id);
 
-        if ($store->user_id !== Auth::id()) {
-            return redirect()->route('mystore')->with('error', 'คุณไม่มีสิทธิ์ลบร้านค้านี้');
+            // ตรวจสอบสิทธิ์ผู้ใช้
+            if ($store->user_id !== Auth::id()) {
+                return redirect()->route('mystore')
+                    ->with('error', 'คุณไม่มีสิทธิ์ลบร้านค้านี้');
+            }
+
+            // ดึงสินค้าทั้งหมดของร้าน
+            $products = Product::where('id_stores', $store->id)->get();
+
+            // ลบรูปภาพของสินค้าทั้งหมด
+            foreach ($products as $product) {
+                if ($product->ProductImage) {
+                    Storage::delete('public/' . $product->ProductImage);
+                }
+            }
+
+            // ลบสินค้าทั้งหมดของร้าน
+            Product::where('id_stores', $store->id)->delete();
+
+            // ลบร้านค้า
+            $store->delete();
+
+            return redirect()->route('mystore')
+                ->with('success', 'ร้านค้าและสินค้าทั้งหมดถูกลบเรียบร้อยแล้ว');
+
+        } catch (\Exception $e) {
+            return redirect()->route('mystore')
+                ->with('error', 'เกิดข้อผิดพลาดในการลบร้านค้า: ' . $e->getMessage());
         }
-
-        $store->delete();
-
-        return redirect()->route('mystore')->with('success', 'ร้านค้าถูกลบเรียบร้อยแล้ว');
     }
+
+    public function destroyProduct($id)
+    {
+        try {
+            $product = Product::findOrFail($id);
+
+            // ตรวจสอบสิทธิ์ผู้ใช้
+            $store = Store::findOrFail($product->id_stores);
+            if ($store->user_id !== Auth::id()) {
+                return redirect()->back()
+                    ->with('error', 'คุณไม่มีสิทธิ์ลบสินค้านี้');
+            }
+
+            // ลบรูปภาพสินค้า
+            if ($product->ProductImage) {
+                Storage::delete('public/' . $product->ProductImage);
+            }
+
+            // ลบสินค้า
+            $product->delete();
+
+            return redirect()->back()
+                ->with('success', 'สินค้าถูกลบเรียบร้อยแล้ว');
+
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'เกิดข้อผิดพลาดในการลบสินค้า: ' . $e->getMessage());
+        }
+    }
+    
+
 }

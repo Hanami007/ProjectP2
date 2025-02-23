@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use App\Models\Store;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -32,14 +34,16 @@ class ProductController extends Controller
 
     public function create()
     {
-        $stores = Store::all(); // ดึงข้อมูลร้านค้าทั้งหมด
-        return Inertia::render('Products/Create', ['stores' => $stores]);
+        $store = Store::where('user_id', Auth::id())->first();
+        if (!$store) {
+            return redirect()->route('mystore')->with('error', 'คุณยังไม่มีร้านค้า กรุณาสร้างร้านค้าก่อน');
+        }
+        return Inertia::render('Products/Create', ['store' => $store]);
     }
 
     // บันทึกข้อมูลสินค้า
     public function store(Request $request)
     {
-        Log::info('ข้อมูลที่ต้องการบันทึก');
         // การตรวจสอบข้อมูล
         $validated = $request->validate([
             'id_stores' => 'required|exists:stores,id',
@@ -68,10 +72,38 @@ class ProductController extends Controller
             'ProductStatus' => $validated['ProductStatus'],
             'ProductDescription' => $validated['ProductDescription'],
             'ProductImage' => $imagePath,
-            // 'ProductRating' ใช้ค่า default = 0
-            // 'CreatedAt' ใช้ timestamp อัตโนมัติ
         ]);
 
-        return redirect()->route('mystore')->with('success', 'สร้างสินค้าสำเร็จ');
+        // Redirect ไปยังหน้าร้านค้า
+        return redirect()->route('stores.show', $validated['id_stores'])->with('success', 'สร้างสินค้าสำเร็จ');
+    }
+
+    public function update(Request $request, Product $product)
+    {
+        // ตรวจสอบสิทธิ์การแก้ไขสินค้า
+        $store = Store::where('user_id', Auth::id())->first();
+        if (!$store || $product->id_stores != $store->id) {
+            abort(403, 'You do not have permission to edit this product.');
+        }
+
+        // ตรวจสอบข้อมูลที่รับมา
+        $validated = $request->validate([
+            'ProductName' => 'required|string|max:255',
+            'Price' => 'required|numeric|min:0',
+            'ProductDescription' => 'nullable|string',
+        ]);
+
+        // อัพเดทข้อมูลสินค้า
+        $product->update($validated);
+
+        // ส่งกลับไปยังหน้าร้านค้าพร้อมข้อความสำเร็จ
+        return redirect()->route('stores.show', $store->id)->with('success', 'อัพเดทสินค้าสำเร็จ');
+    }
+
+    public function edit($id)
+    {
+        $product = Product::with('store')->findOrFail($id);
+        $store = $product->store;
+        return Inertia::render('Products/Edit', ['product' => $product, 'store' => $store]);
     }
 }

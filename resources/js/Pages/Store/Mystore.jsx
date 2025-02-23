@@ -16,9 +16,9 @@ const Mystore = ({ store, products }) => {
         e.preventDefault();
         post(route("products.store"), {
             data: {
-                name: e.target.name.value,
-                price: e.target.price.value,
-                description: e.target.description.value,
+                ProductName: e.target.ProductName.value,
+                Price: e.target.Price.value,
+                ProductDescription: e.target.ProductDescription.value,
                 id_stores: store.id,
             },
         });
@@ -28,9 +28,9 @@ const Mystore = ({ store, products }) => {
         e.preventDefault();
         patch(route("products.update", editingProduct.id), {
             data: {
-                name: e.target.name.value,
-                price: e.target.price.value,
-                description: e.target.description.value,
+                ProductName: e.target.elements.ProductName.value,
+                Price: e.target.elements.Price.value,
+                ProductDescription: e.target.elements.ProductDescription.value,
             },
         });
         setEditingProduct(null);
@@ -113,50 +113,74 @@ const Mystore = ({ store, products }) => {
                                         </Link>
                                     </div>
                                     <div className="mt-6">
-                                        <h2 className="text-2xl font-semibold text-center mb-4">
-                                            สินค้าของฉัน
+                                        <h2 className="text-xl font-semibold mb-4">
+                                            Products:
                                         </h2>
-                                        {products && products.length > 0 ? (
-                                            products.map((product) => (
-                                                <div
-                                                    key={product.id}
-                                                    className="mb-4"
-                                                >
-                                                    <div className="flex justify-between items-center">
-                                                        <div>
-                                                            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                                                                {product.name}
-                                                            </h3>
-                                                            <p className="text-gray-700 dark:text-gray-300">
-                                                                {
-                                                                    product.description
-                                                                }
-                                                            </p>
-                                                            <p className="text-gray-700 dark:text-gray-300">
-                                                                ราคา:{" "}
-                                                                {product.price}
-                                                            </p>
-                                                        </div>
-                                                        <div>
-                                                            <button
-                                                                onClick={() =>
-                                                                    setEditingProduct(
-                                                                        product
-                                                                    )
-                                                                }
-                                                                className="px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 focus:outline-none focus:bg-yellow-700 mr-2"
+                                        <div className="flex flex-wrap gap-4 justify-center">
+                                            {products && products.length > 0 ? (
+                                                products.map((product) => (
+                                                    <div
+                                                        key={product.id}
+                                                        className="p-4 border border-gray-300 rounded-md shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col items-center w-64"
+                                                    >
+                                                        <img
+                                                            src={
+                                                                product.ProductImage
+                                                                    ? `/storage/${product.ProductImage}`
+                                                                    : "default_image_url.jpg"
+                                                            }
+                                                            alt={
+                                                                product.ProductName
+                                                            }
+                                                            className="w-32 h-32 object-cover rounded-full mx-auto"
+                                                        />
+                                                        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                                                            {
+                                                                product.ProductName
+                                                            }
+                                                        </h3>
+                                                        <p className="text-gray-700 dark:text-gray-300">
+                                                            {
+                                                                product.ProductDescription
+                                                            }
+                                                        </p>
+                                                        <p className="text-gray-700 dark:text-gray-300">
+                                                            ราคา:{" "}
+                                                            {product.Price}
+                                                        </p>
+                                                        <div className="mt-2 flex space-x-2">
+                                                            <Link
+                                                                href={route(
+                                                                    "products.edit",
+                                                                    product.id
+                                                                )}
+                                                                className="bg-blue-500 text-white py-1 px-3 rounded-full hover:bg-blue-600 transition duration-200"
                                                             >
                                                                 แก้ไข
+                                                            </Link>
+
+                                                            <button
+                                                                onClick={() =>
+                                                                    destroy(
+                                                                        route(
+                                                                            "products.destroy",
+                                                                            product.id
+                                                                        )
+                                                                    )
+                                                                }
+                                                                className="bg-red-500 text-white py-1 px-3 rounded-full hover:bg-red-600 transition duration-200"
+                                                            >
+                                                                ลบ
                                                             </button>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            ))
-                                        ) : (
-                                            <p className="text-center text-gray-500 dark:text-gray-400">
-                                                ไม่มีสินค้า
-                                            </p>
-                                        )}
+                                                ))
+                                            ) : (
+                                                <p className="text-center text-gray-500">
+                                                    ไม่มีสินค้าในร้านนี้
+                                                </p>
+                                            )}
+                                        </div>
                                     </div>
                                     {editingProduct && (
                                         <div className="mt-6">
@@ -170,9 +194,9 @@ const Mystore = ({ store, products }) => {
                                                     </label>
                                                     <input
                                                         type="text"
-                                                        name="name"
+                                                        name="ProductName"
                                                         defaultValue={
-                                                            editingProduct.name
+                                                            editingProduct.ProductName
                                                         }
                                                         className="w-full px-4 py-2 border rounded-md dark:bg-gray-700 dark:text-gray-300"
                                                         required
@@ -184,9 +208,9 @@ const Mystore = ({ store, products }) => {
                                                     </label>
                                                     <input
                                                         type="number"
-                                                        name="price"
+                                                        name="Price"
                                                         defaultValue={
-                                                            editingProduct.price
+                                                            editingProduct.Price
                                                         }
                                                         className="w-full px-4 py-2 border rounded-md dark:bg-gray-700 dark:text-gray-300"
                                                         required
@@ -197,9 +221,9 @@ const Mystore = ({ store, products }) => {
                                                         รายละเอียด
                                                     </label>
                                                     <textarea
-                                                        name="description"
+                                                        name="ProductDescription"
                                                         defaultValue={
-                                                            editingProduct.description
+                                                            editingProduct.ProductDescription
                                                         }
                                                         className="w-full px-4 py-2 border rounded-md dark:bg-gray-700 dark:text-gray-300"
                                                     ></textarea>

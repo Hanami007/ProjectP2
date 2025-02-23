@@ -26,7 +26,7 @@ export default function Show({ store, products }) {
                             className="text-center"
                         >
                             <img
-                                src={product.image_url || "default_image_url.jpg"} // Default image
+                                src={product.ProductImage || "default_image_url.jpg"} // Default image
                                 alt={product.ProductName}
                                 className="w-32 h-32 object-cover rounded-full mx-auto"
                             />

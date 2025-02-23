@@ -25,6 +25,7 @@ Route::get('/products/{id}/edit', [ProductController::class, 'edit'])->name('pro
 Route::post('/products', [ProductController::class, 'store'])->name('products.store');
 Route::patch('/products/{product}', [ProductController::class, 'update'])->name('products.update');
 Route::delete('products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
+Route::middleware(['auth:sanctum', 'verified'])->post('/products', [ProductController::class, 'store'])->name('products.store');
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/orders', [OrderController::class, 'index'])->name('orders.index');
 Route::middleware(['auth:sanctum', 'verified'])->post('/orders', [OrderController::class, 'store'])->name('orders.store');
@@ -45,12 +46,11 @@ Route::get('stores/create', [StoreController::class, 'create'])->name('stores.cr
 Route::post('stores', [StoreController::class, 'store'])->name('stores.store'); // Add this line
 Route::get('stores/{id}', [StoreController::class, 'show'])->name('stores.show');
 Route::get('stores', [StoreController::class, 'index'])->name('stores.index');
+Route::delete('/products/{id}', [StoreController::class, 'destroyProduct'])->name('products.destroy');
 Route::middleware(['auth:sanctum', 'verified'])->get('/mystore', [StoreController::class, 'mystore'])->name('mystore');
 Route::middleware(['auth:sanctum', 'verified'])->get('/user-store', [StoreController::class, 'userStore'])->name('user.store');
 Route::middleware(['auth:sanctum', 'verified'])->delete('/stores/{id}', [StoreController::class, 'destroy'])->name('stores.destroy');
 
-Route::middleware(['auth:sanctum', 'verified'])->post('/products', [ProductController::class, 'store'])->name('products.store');
-Route::middleware(['auth:sanctum', 'verified'])->patch('/products/{id}', [ProductController::class, 'update'])->name('products.update');
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [

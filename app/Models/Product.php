@@ -17,6 +17,7 @@ class Product extends Model
         'ProductStatus',
         'image',
         'ProductDescription',
+        'ProductImage',
         'id_stores',
     ];
 

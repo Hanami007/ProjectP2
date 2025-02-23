@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { Head, useForm } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 
-export default function Create({ auth, stores }) {
+export default function Create({ auth, store }) {
     const { data, setData, post, processing, errors } = useForm({
-        id_stores: '',
+        id_stores: store.id, // ตั้งค่า ID ร้านค้าโดยอัตโนมัติ
         ProductName: '',
         Price: '',
         Stock: '',
@@ -48,26 +48,12 @@ export default function Create({ auth, stores }) {
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                         <div className="p-6 bg-white border-b border-gray-200">
                             <form onSubmit={handleSubmit} className="space-y-6">
-                                {/* Store Selection */}
+                                {/* Store Information */}
                                 <div>
-                                    <label htmlFor="id_stores" className="block text-sm font-medium text-gray-700">
-                                        เลือกร้านค้า
+                                    <label className="block text-sm font-medium text-gray-700">
+                                        ร้านค้า: {store.StoreName} {/* แสดงชื่อร้านค้า */}
                                     </label>
-                                    <select
-                                        id="id_stores"
-                                        value={data.id_stores}
-                                        onChange={(e) => setData('id_stores', e.target.value)}
-                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                        required
-                                    >
-                                        <option value="">กรุณาเลือกร้านค้า</option>
-                                        {stores.map((store) => (
-                                            <option key={store.id} value={store.id}>
-                                                {store.name}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    {errors.id_stores && <div className="text-red-500 text-sm mt-1">{errors.id_stores}</div>}
+                                    <input type="hidden" name="id_stores" value={store.id} />
                                 </div>
 
                                 {/* Product Name */}
