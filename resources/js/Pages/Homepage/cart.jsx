@@ -24,7 +24,8 @@ const CartItem = ({ item, onQuantityChange }) => {
         <div className="flex items-center justify-between border-b py-4">
             <div className="flex items-center space-x-4">
                 <img
-                    src={item.product.ProductImage || "default.jpg"}
+                    src={item.product.ProductImage ? `/storage/${item.product.ProductImage}`
+                    : "default_image_url.jpg"}
                     alt={item.product.ProductName}
                     className="w-16 h-16 object-cover rounded-full"
                 />
