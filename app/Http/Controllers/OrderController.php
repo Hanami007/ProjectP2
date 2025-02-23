@@ -11,9 +11,10 @@ class OrderController extends Controller
         $order = Order::with('order_details.product')->findOrFail($order_id);
         return Inertia::render('Orders/OrderStatus', ['order' => $order]);
     }
+
     public function show($id)
     {
-        $order = Order::with(['orderDetails.product'])->find($id);
+        $order = Order::with('order_details.product')->find($id); // ใช้ชื่อความสัมพันธ์ 'order_details'
 
         if (!$order) {
             return response()->json(['message' => 'Order not found'], 404);
@@ -24,7 +25,7 @@ class OrderController extends Controller
             'TotalAmount' => (float) $order->TotalAmount, // แปลงเป็น float
             'OrderStatus' => $order->OrderStatus,
             'payment_status' => $order->payment_status,
-            'orderDetails' => $order->orderDetails->map(function ($detail) {
+            'orderDetails' => $order->order_details->map(function ($detail) {
                 return [
                     'id' => $detail->id,
                     'Quantity' => $detail->quantity,
@@ -37,4 +38,21 @@ class OrderController extends Controller
         ]);
     }
 
+    public function pendingOrders()
+    {
+        $orders = Order::where('OrderStatus', 'pending')->get();
+        return Inertia::render('Store/OrderPending', [
+            'orders' => $orders,
+        ]);
+    }
+
+    // ฟังก์ชันอัปเดตสถานะคำสั่งซื้อ
+    public function updateOrderStatus(Order $order)
+    {
+        $order->update([
+            'status' => 'completed', // เปลี่ยนสถานะคำสั่งซื้อเป็น completed
+        ]);
+
+        return redirect()->route('orders.pending');
+    }
 }

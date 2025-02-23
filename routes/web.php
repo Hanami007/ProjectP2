@@ -19,7 +19,8 @@ Route::delete('/cart/{id}', [CartController::class, 'destroy'])->name('cart.dest
 Route::get('/payment/{order_id}', [PaymentController::class, 'paymentPage'])->name('payment.page');
 Route::post('/payment/{order_id}/confirm', [PaymentController::class, 'confirmPayment'])->name('payment.confirm');
 
-Route::get('/order/{order_id}', [OrderController::class, 'status'])->name('order.status');
+Route::get('/orders/pending', [OrderController::class, 'pendingOrders'])->name('orders.pending');
+Route::put('/orders/{order}/update', [OrderController::class, 'updateOrderStatus'])->name('orders.update');
 
 Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
 Route::get('/orders/{order}/payment', [OrderController::class, 'showPayment'])->name('orders.payment');
