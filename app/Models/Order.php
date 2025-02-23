@@ -21,12 +21,12 @@ class Order extends Model
 
     public function payment()
     {
-        return $this->hasOne(Payment::class, 'id_order');
+        return $this->hasOne(Payment::class, 'order_id');
     }
 
     public function delivery()
     {
-        return $this->hasOne(Delivery::class, 'id_order');
+        return $this->hasOne(Delivery::class, 'order_id');
     }
 
     public function items()

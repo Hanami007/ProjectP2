@@ -11,6 +11,9 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\WalletController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\OrderTranController;
+use App\Http\Controllers\OrderDetailController;
+
 
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
@@ -30,6 +33,7 @@ Route::get('/orders/{order}/payment', [OrderController::class, 'showPayment'])->
 Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
 Route::get('/orders/orderdetail/{id}', [OrderController::class, 'show'])->name('orders.show');
 Route::get('/wallet/topup', [WalletController::class, 'showTopupForm'])->name('wallet.topup');
+
 
 Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
 Route::get('/homepage', [ProductController::class, 'index'])->name('homepage.index');

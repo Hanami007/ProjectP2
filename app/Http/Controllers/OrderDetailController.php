@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Order;
+use Inertia\Inertia;
 
 class OrderDetailController extends Controller
 {
@@ -28,5 +29,6 @@ class OrderDetailController extends Controller
             })
         ]);
     }
+    
 }
 
