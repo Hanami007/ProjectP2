@@ -2,20 +2,24 @@ import React, { useState, useEffect } from "react";
 import { Link, useForm } from "@inertiajs/inertia-react";
 import { Inertia } from "@inertiajs/inertia";
 
-const CartItem = ({ item, onQuantityChange }) => {
-    const [itemQuantity, setItemQuantity] = useState(item.quantity);
+const CartItem = ({ item }) => {
+    const handleQuantityUpdate = (newQuantity) => {
+        if (newQuantity >= 1) {
+            Inertia.put('/cart', { product_id: item.product.id, quantity: newQuantity }, {
+                onError: (errors) => {
+                    console.error(errors); // แสดง error ถ้ามีปัญหา
+                }
+            });
+        }
+    };
 
     const handleIncrement = () => {
-        const newQuantity = itemQuantity + 1;
-        setItemQuantity(newQuantity);
-        onQuantityChange(item.product.id, newQuantity); // ส่ง product_id และจำนวนใหม่
+        handleQuantityUpdate(item.quantity + 1);
     };
 
     const handleDecrement = () => {
-        if (itemQuantity > 1) {
-            const newQuantity = itemQuantity - 1;
-            setItemQuantity(newQuantity);
-            onQuantityChange(item.product.id, newQuantity); // ส่ง product_id และจำนวนใหม่
+        if (item.quantity > 1) {
+            handleQuantityUpdate(item.quantity - 1);
         }
     };
 
@@ -45,7 +49,7 @@ const CartItem = ({ item, onQuantityChange }) => {
                 >
                     -
                 </button>
-                <span>{itemQuantity}</span>
+                <span>{item.quantity}</span>
                 <button
                     onClick={handleIncrement}
                     className="px-3 py-1 bg-gray-300 rounded"
@@ -55,7 +59,9 @@ const CartItem = ({ item, onQuantityChange }) => {
             </div>
             <div>
                 <button
-                    onClick={() => Inertia.delete(`/cart/${item.product.id}`)}
+                    onClick={() => Inertia.delete(`/cart/${item.product.id}`, {
+                        onSuccess: () => Inertia.reload({ only: ['cartItems'] }),
+                    })}
                     className="text-red-500"
                 >
                     ลบ
@@ -66,57 +72,24 @@ const CartItem = ({ item, onQuantityChange }) => {
 };
 
 const CartPage = ({ cartItems }) => {
-    // สร้าง state quantities จาก cartItems
-    const [quantities, setQuantities] = useState(
-        Object.fromEntries(cartItems.map((item) => [item.product.id, item.quantity]))
-    );
     const [paymentMethod, setPaymentMethod] = useState("cod");
 
-    // ตั้งค่า useForm
     const { data, setData, post, processing } = useForm({
-        cartUpdates: [],
         payment_method: paymentMethod,
     });
 
-    // ฟังก์ชันจัดการการเปลี่ยนแปลงจำนวนสินค้า
-    const handleQuantityChange = (productId, newQuantity) => {
-        setQuantities((prevQuantities) => ({
-            ...prevQuantities,
-            [productId]: newQuantity,
-        }));
-    };
+    useEffect(() => {
+        setData('payment_method', paymentMethod);
+    }, [paymentMethod]);
 
-    // คำนวณราคารวมโดยอิงจาก product_id และราคาสินค้า
     const calculateTotal = () => {
         return cartItems
-            .reduce((sum, item) => {
-                const quantity = quantities[item.product.id] || item.quantity;
-                return sum + parseFloat(item.product.Price) * quantity;
-            }, 0)
+            .reduce((sum, item) => sum + parseFloat(item.product.Price) * item.quantity, 0)
             .toFixed(2);
     };
 
-    // อัพเดต data เมื่อ quantities หรือ paymentMethod เปลี่ยน
-    useEffect(() => {
-        const cartData = Object.entries(quantities).map(([product_id, quantity]) => ({
-            product_id: parseInt(product_id),
-            quantity,
-        }));
-        setData({
-            cartUpdates: cartData,
-            payment_method: paymentMethod,
-        });
-    }, [quantities, paymentMethod]);
-
-    // ฟังก์ชันดำเนินการชำระเงิน
     const handleCheckout = () => {
-        post("/cart/checkout", {
-            onSuccess: (page) => {
-                if (page.props.order_id) {
-                    Inertia.visit(`/orders/${page.props.order_id}`);
-                }
-            },
-        });
+        post("/cart/checkout");
     };
 
     if (cartItems.length === 0) {
@@ -139,7 +112,6 @@ const CartPage = ({ cartItems }) => {
                     <CartItem
                         key={item.product.id}
                         item={item}
-                        onQuantityChange={handleQuantityChange}
                     />
                 ))}
 

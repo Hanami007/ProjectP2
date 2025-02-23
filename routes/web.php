@@ -13,8 +13,10 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\OrderController;
 
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-Route::post('/cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
+Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
+Route::put('/cart', [CartController::class, 'update'])->name('cart.update');
 Route::delete('/cart/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
+Route::post('/cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
 
 Route::get('/payment/{order_id}', [PaymentController::class, 'paymentPage'])->name('payment.page');
 Route::post('/payment/{order_id}/confirm', [PaymentController::class, 'confirmPayment'])->name('payment.confirm');
@@ -24,6 +26,7 @@ Route::get('/order/{order_id}', [OrderController::class, 'status'])->name('order
 Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
 Route::get('/orders/{order}/payment', [OrderController::class, 'showPayment'])->name('orders.payment');
 Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+Route::get('/orders/{order_id}', [OrderController::class, 'status'])->name('order.status');
 
 Route::get('/wallet/topup', [WalletController::class, 'showTopupForm'])->name('wallet.topup');
 Route::post('/wallet/topup', [WalletController::class, 'topup']);
@@ -41,14 +44,6 @@ Route::middleware(['auth:sanctum', 'verified'])->post('/products', [ProductContr
 Route::middleware(['auth:sanctum', 'verified'])->get('/orders', [OrderController::class, 'index'])->name('orders.index');
 Route::middleware(['auth:sanctum', 'verified'])->post('/orders', [OrderController::class, 'store'])->name('orders.store');
 Route::middleware(['auth:sanctum', 'verified'])->get('/profile-detail', [UserController::class, 'show'])->name('profile.show');
-
-Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
-Route::patch('/cart/update', [CartController::class, 'update'])->name('cart.update');
-Route::delete('/cart/{id}', [CartController::class, 'remove'])->name('cart.remove');
-Route::get('/cart/count', [CartController::class, 'count'])->name('cart.count');
-Route::post('/cart/increment', [CartController::class, 'increment'])->name('cart.increment');
-Route::post('/cart/decrement', [CartController::class, 'decrement'])->name('cart.decrement');
 
 Route::post('/reviews', [ReviewController::class, 'store'])->middleware('auth');
 Route::get('/reviews/{productId}', [ReviewController::class, 'index']);
