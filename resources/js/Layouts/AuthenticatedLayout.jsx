@@ -10,12 +10,13 @@ export default function AuthenticatedLayout({ header, children }) {
     const { auth } = usePage().props;
     const user = auth ? auth.user : null;
 
-    const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
+    const [showingNavigationDropdown, setShowingNavigationDropdown] =
+        useState(false);
     const [hasStore, setHasStore] = useState(false);
 
     useEffect(() => {
         if (user) {
-            axios.get(route('user.store')).then(response => {
+            axios.get(route("user.store")).then((response) => {
                 setHasStore(!!response.data);
             });
         }
@@ -81,7 +82,11 @@ export default function AuthenticatedLayout({ header, children }) {
                                                     className="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-700 transition duration-150 ease-in-out hover:text-blue-500 focus:outline-none dark:bg-gray-800 dark:text-gray-300 dark:hover:text-blue-400"
                                                 >
                                                     <img
-                                                        src="/path/to/profile-image.jpg"
+                                                        src={
+                                                            user?.Picture
+                                                                ? `/storage/${user.Picture}`
+                                                                : "/path/to/default-image.jpg"
+                                                        }
                                                         alt="Profile"
                                                         className="h-8 w-8 rounded-full"
                                                     />
