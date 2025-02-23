@@ -97,12 +97,12 @@ export default function AuthenticatedLayout({ header, children }) {
                                             <Dropdown.Link href={route("profile.show")}>
                                                 Profile Details
                                             </Dropdown.Link>
-                                            <Dropdown.Link href={route("profile.edit")}>
-                                                Setting Profile
-                                            </Dropdown.Link>
                                             <Dropdown.Link href={route("profile.orders")}>
                                                 User Orders
                                             </Dropdown.Link> {/* เพิ่มลิงก์ไปยังหน้า UserOrders */}
+                                            <Dropdown.Link href={route("profile.edit")}>
+                                                Setting Profile
+                                            </Dropdown.Link>
                                             <Dropdown.Link
                                                 href={route("logout")}
                                                 method="post"
