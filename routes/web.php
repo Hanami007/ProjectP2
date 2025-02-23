@@ -24,13 +24,12 @@ Route::post('/payment/{order_id}/confirm', [PaymentController::class, 'confirmPa
 Route::get('/orders/pending', [OrderController::class, 'pendingOrders'])->name('orders.pending');
 Route::put('/orders/{order}/update', [OrderController::class, 'updateOrderStatus'])->name('orders.update');
 Route::get('/orders/{order}/status', [OrderController::class, 'status'])->name('orders.status');
-
+Route::get('/orders/{order_id}', [OrderController::class, 'status'])->name('order.status');
 Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
 Route::get('/orders/{order}/payment', [OrderController::class, 'showPayment'])->name('orders.payment');
 Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
 Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
 Route::get('/wallet/topup', [WalletController::class, 'showTopupForm'])->name('wallet.topup');
-
 
 Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
 Route::get('/homepage', [ProductController::class, 'index'])->name('homepage.index');

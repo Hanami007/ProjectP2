@@ -140,7 +140,6 @@ class CartController extends Controller
 
     return redirect()->back()->with('error', 'ไม่พบสินค้านี้ในตะกร้า');
 }
-
     /**
      * ลบสินค้าออกจากตะกร้า
      */
