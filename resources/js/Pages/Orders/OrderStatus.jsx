@@ -74,7 +74,6 @@ const OrderConfirmation = ({ order }) => {
                                     </div>
                                     <div className="text-right">
                                         <p className="text-gray-600">จำนวน: {detail.quantity || 0} ชิ้น</p>
-                                        <p className="text-gray-800 font-semibold">฿{Number(detail.product?.price || 0).toFixed(2)}</p>
                                     </div>
                                 </div>
                             ))}
