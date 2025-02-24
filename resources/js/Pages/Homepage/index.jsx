@@ -1,35 +1,106 @@
 import React, { useState, useEffect } from "react";
 import { Link, Head } from "@inertiajs/react";
-import axios from "axios";
+import { Search, ShoppingCart, Eye } from "lucide-react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import FloatingCart from "@/components/FloatingCart";
 
-const Homepage = ({ products }) => {
-    const [searchTerm, setSearchTerm] = useState(""); // เก็บคำค้นหา
-    const [filteredProducts, setFilteredProducts] = useState(products);
+const ProductCard = ({ product, onAddToCart }) => (
+    <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out transform hover:scale-105">
+        <div className="relative group">
+            <img
+                src={product.ProductImage ? `/storage/${product.ProductImage}` : "default_image_url.jpg"}
+                alt={product.ProductName}
+                className="w-full h-48 object-cover rounded-t-xl"
+            />
+            <div className="absolute inset-0 bg-blue-600 bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300"></div>
+        </div>
+        <div className="p-4">
+            <h3 className="text-lg font-semibold text-gray-800 mb-2">{product.ProductName}</h3>
+            <p className="text-blue-600 font-bold text-xl mb-4">
+                ฿{typeof product.Price === "number" ? product.Price.toFixed(2) : product.Price}
+            </p>
+            <div className="flex flex-col sm:flex-row gap-2">
+                <button
+                    onClick={() => onAddToCart(product.id)}
+                    className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center gap-2"
+                >
+                    <ShoppingCart size={18} />
+                    <span>Add to Cart</span>
+                </button>
+                <Link
+                    href={`/products/${product.id}`}
+                    className="flex-1 bg-blue-100 text-blue-600 py-2 px-4 rounded-lg hover:bg-blue-200 transition-colors duration-200 flex items-center justify-center gap-2"
+                >
+                    <Eye size={18} />
+                    <span>Details</span>
+                </Link>
+            </div>
+        </div>
+    </div>
+);
 
-    // ฟังก์ชันกรองสินค้าตามคำค้นหา
+const FeaturedProduct = ({ product, onAddToCart }) => (
+    <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl p-6 text-white">
+        <div className="flex flex-col md:flex-row items-center gap-8">
+            <img
+                src={product.ProductImage ? `/storage/${product.ProductImage}` : "default_image_url.jpg"}
+                alt={product.ProductName}
+                className="w-64 h-64 object-cover rounded-xl shadow-lg"
+            />
+            <div className="flex-1 text-center md:text-left">
+                <h2 className="text-3xl font-bold mb-4">{product.ProductName}</h2>
+                <p className="text-blue-100 mb-2">Featured Product</p>
+                <p className="text-2xl font-bold mb-6">
+                    ฿{typeof product.Price === "number" ? product.Price.toFixed(2) : product.Price}
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4">
+                    <button
+                        onClick={() => onAddToCart(product.id)}
+                        className="bg-white text-blue-600 py-2 px-6 rounded-lg hover:bg-blue-50 transition-colors duration-200 flex items-center justify-center gap-2"
+                    >
+                        <ShoppingCart size={18} />
+                        <span>Add to Cart</span>
+                    </button>
+                    <Link
+                        href={`/products/${product.id}`}
+                        className="bg-blue-700 text-white py-2 px-6 rounded-lg hover:bg-blue-800 transition-colors duration-200 flex items-center justify-center gap-2"
+                    >
+                        <Eye size={18} />
+                        <span>View Details</span>
+                    </Link>
+                </div>
+            </div>
+        </div>
+    </div>
+);
+
+const Homepage = ({ products }) => {
+    const [searchTerm, setSearchTerm] = useState("");
+    const [filteredProducts, setFilteredProducts] = useState(products);
+    const [currentProductIndex, setCurrentProductIndex] = useState(0);
+
     useEffect(() => {
         let filtered = products;
-
-        // ค้นหาจากชื่อสินค้าและประเภทสินค้า
         if (searchTerm) {
             filtered = filtered.filter(
                 (product) =>
-                    product.ProductName.toLowerCase().includes(
-                        searchTerm.toLowerCase()
-                    ) ||
-                    product.ProductType.toLowerCase().includes(
-                        searchTerm.toLowerCase()
-                    )
+                    product.ProductName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    product.ProductType.toLowerCase().includes(searchTerm.toLowerCase())
             );
         }
-
         setFilteredProducts(filtered);
     }, [searchTerm, products]);
 
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCurrentProductIndex((prevIndex) =>
+                prevIndex + 1 >= filteredProducts.length ? 0 : prevIndex + 1
+            );
+        }, 5000);
+        return () => clearInterval(interval);
+    }, [filteredProducts]);
+
     const addToCart = async (productId) => {
-        console.log("เพิ่มสินค้า ID:", productId);
         try {
             await axios.post("/cart", { product_id: productId, quantity: 1 });
             alert("เพิ่มสินค้าลงตะกร้าเรียบร้อยแล้ว");
@@ -40,87 +111,50 @@ const Homepage = ({ products }) => {
     };
 
     return (
-        <AuthenticatedLayout
-            header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                    Online Shop
-                </h2>
-            }
-        >
+        <AuthenticatedLayout>
             <Head title="Online Shop" />
-
-            <div className="py-12">
-                <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
-                        <div className="p-6 text-gray-900 dark:text-gray-100">
-                            <header className="flex justify-between items-center py-6">
-                                <div className="text-3xl font-bold">
-                                    <Link href="/" className="text-black">
-                                        Online Shop
-                                    </Link>
-                                </div>
-                            </header>
-
-                            {/* ฟังก์ชันค้นหา */}
-                            <div className="mb-6">
+            <div className="min-h-screen bg-gray-50">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                    {/* Header & Search */}
+                    <div className="mb-8">
+                        <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
+                            <h1 className="text-4xl font-bold text-gray-900">
+                                Online <span className="text-blue-600">Shop</span>
+                            </h1>
+                            <div className="relative w-full md:w-96">
+                                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
                                 <input
                                     type="text"
-                                    placeholder="ค้นหาสินค้า..."
-                                    className="w-full px-4 py-2 border rounded-md"
+                                    placeholder="Search products..."
+                                    className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                     value={searchTerm}
-                                    onChange={(e) =>
-                                        setSearchTerm(e.target.value)
-                                    }
+                                    onChange={(e) => setSearchTerm(e.target.value)}
                                 />
                             </div>
+                        </div>
+                    </div>
 
-                            <h1 className="text-3xl font-semibold text-center mb-8">
-                                รายการสินค้า
-                            </h1>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-                                {filteredProducts.map((product) => (
-                                    <div
-                                        key={product.id}
-                                        className="bg-white shadow-lg rounded-lg overflow-hidden transform hover:scale-105 transition-transform duration-300"
-                                    >
-                                        <img
-                                            src={
-                                                product.ProductImage
-                                                    ? `/storage/${product.ProductImage}`
-                                                    : "default_image_url.jpg"
-                                            }
-                                            alt={product.ProductName}
-                                            className="w-32 h-32 object-cover rounded-full mx-auto"
-                                        />
-                                        <div className="p-4">
-                                            <h3 className="text-lg font-semibold text-gray-900">
-                                                {product.ProductName}
-                                            </h3>
-                                            <p className="text-gray-600">
-                                                ฿
-                                                {typeof product.Price ===
-                                                "number"
-                                                    ? product.Price.toFixed(2)
-                                                    : product.Price}
-                                            </p>
-                                            <button
-                                                onClick={() =>
-                                                    addToCart(product.id)
-                                                }
-                                                className="mt-4 inline-block bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition-colors duration-200"
-                                            >
-                                                เพิ่มลงในตะกร้า
-                                            </button>
-                                            <Link
-                                                href={`/products/${product.id}`}
-                                                className="mt-4 inline-block bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition-colors duration-200"
-                                            >
-                                                ดูรายละเอียด
-                                            </Link>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
+                    {/* Featured Product */}
+                    {filteredProducts[currentProductIndex] && (
+                        <div className="mb-12">
+                            <FeaturedProduct
+                                product={filteredProducts[currentProductIndex]}
+                                onAddToCart={addToCart}
+                            />
+                        </div>
+                    )}
+
+                    {/* Product Grid */}
+                    <div className="mb-8">
+                        <h2 className="text-2xl font-semibold text-gray-800 mb-6">All Products</h2>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                            {filteredProducts.map((product) => (
+                                <ProductCard
+                                    key={product.id}
+                                    product={product}
+                                    onAddToCart={addToCart}
+                                />
+                            ))}
                         </div>
                     </div>
                 </div>

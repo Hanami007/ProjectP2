@@ -1,10 +1,11 @@
 import React from "react";
 import { Head } from "@inertiajs/react";
 import { Inertia } from "@inertiajs/inertia";
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 
 const UserOrders = ({ orders = [] }) => {
     return (
-        <>
+        <AuthenticatedLayout> {/* ใช้ layout นี้ห่อหุ้มเนื้อหาของ UserOrders */}
             <Head title="Your Orders" />
             <div className="max-w-4xl mx-auto p-6">
                 <h2 className="text-2xl font-semibold mb-4">Your Orders</h2>
@@ -40,10 +41,9 @@ const UserOrders = ({ orders = [] }) => {
                     <p className="text-gray-500">You have no orders yet.</p>
                 )}
             </div>
-        </>
+        </AuthenticatedLayout>
     );
 };
-
 
 const confirmReceipt = (orderId) => {
     Inertia.post(`/orders/${orderId}/confirm-receipt`, {}, {
@@ -51,12 +51,9 @@ const confirmReceipt = (orderId) => {
             Inertia.reload({ only: ["orders"] });
         },
         onError: (error) => {
-            // แสดงข้อผิดพลาด หรือข้อความเตือน
             console.error(error);
         }
     });
 };
-
-
 
 export default UserOrders;
