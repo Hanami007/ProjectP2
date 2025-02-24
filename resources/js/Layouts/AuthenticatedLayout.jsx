@@ -57,7 +57,6 @@ export default function AuthenticatedLayout({ header, children }) {
                                         >
                                             Order Pending
                                         </NavLink>
-
                                     </>
                                 ) : (
                                     <NavLink
@@ -100,7 +99,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                             </Dropdown.Link>
                                             <Dropdown.Link href={route("profile.orders")}>
                                                 User Orders
-                                            </Dropdown.Link> {/* เพิ่มลิงก์ไปยังหน้า UserOrders */}
+                                            </Dropdown.Link>
                                             <Dropdown.Link href={route("profile.edit")}>
                                                 Setting Profile
                                             </Dropdown.Link>

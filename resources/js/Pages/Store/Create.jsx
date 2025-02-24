@@ -29,11 +29,9 @@ const Create = () => {
 
         router.post("/stores", formData, {
             onSuccess: () => {
-                // จัดการเมื่อสำเร็จ
                 console.log("Store created successfully");
             },
             onError: (errors) => {
-                // จัดการ error
                 setErrors(errors);
                 setProcessing(false);
             },
@@ -47,17 +45,17 @@ const Create = () => {
         const file = e.target.files[0];
         setFormData((prevData) => ({
             ...prevData,
-            Picture: file, // เก็บไฟล์ใน state ของฟอร์ม
+            Picture: file,
         }));
 
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
-                setPreviewImage(reader.result); // ตั้งค่าภาพตัวอย่าง
+                setPreviewImage(reader.result);
             };
             reader.readAsDataURL(file);
         } else {
-            setPreviewImage(null); // หากไม่มีไฟล์ให้ล้างตัวอย่างภาพ
+            setPreviewImage(null);
         }
     };
 
@@ -89,7 +87,7 @@ const Create = () => {
                                         value={formData.storeName}
                                         onChange={handleChange}
                                         required
-                                        className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
+                                        className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-white text-black ${
                                             errors.storeName
                                                 ? "border-red-500"
                                                 : "border-gray-300"
@@ -112,7 +110,7 @@ const Create = () => {
                                         value={formData.ownerName}
                                         onChange={handleChange}
                                         required
-                                        className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
+                                        className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-white text-black ${
                                             errors.ownerName
                                                 ? "border-red-500"
                                                 : "border-gray-300"
@@ -135,7 +133,7 @@ const Create = () => {
                                         value={formData.phoneNumber}
                                         onChange={handleChange}
                                         required
-                                        className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
+                                        className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-white text-black ${
                                             errors.phoneNumber
                                                 ? "border-red-500"
                                                 : "border-gray-300"
@@ -157,7 +155,7 @@ const Create = () => {
                                         value={formData.address}
                                         onChange={handleChange}
                                         required
-                                        className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
+                                        className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-white text-black ${
                                             errors.address
                                                 ? "border-red-500"
                                                 : "border-gray-300"
@@ -169,6 +167,7 @@ const Create = () => {
                                         </p>
                                     )}
                                 </div>
+
                                 <div>
                                     <label
                                         htmlFor="Picture"
@@ -189,7 +188,6 @@ const Create = () => {
                                         </div>
                                     )}
 
-                                    {/* Image Preview */}
                                     {previewImage && (
                                         <div className="mt-2">
                                             <img
@@ -210,9 +208,7 @@ const Create = () => {
                                             : "bg-indigo-600 hover:bg-indigo-700"
                                     }`}
                                 >
-                                    {processing
-                                        ? "กำลังสร้าง..."
-                                        : "สร้างร้านค้า"}
+                                    {processing ? "กำลังสร้าง..." : "สร้างร้านค้า"}
                                 </button>
                             </form>
                         </div>

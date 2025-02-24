@@ -36,9 +36,9 @@ const Mystore = ({ store, products }) => {
     return (
         <AuthenticatedLayout
             header={
-                <div className="flex items-center justify-center space-x-2">
+                <div className="flex items-center justify-center space-x-2 text-gray-900 dark:text-white">
                     <Store className="w-6 h-6" />
-                    <h2 className="text-2xl font-bold">My Store</h2>
+                    <h2 className="text-2xl font-bold ">My Store</h2>
                 </div>
             }
         >
@@ -140,7 +140,7 @@ const Mystore = ({ store, products }) => {
                                                         <div className="absolute bottom-4 left-4 right-4 flex justify-center gap-2">
                                                             <Link
                                                                 href={route("products.edit", product.id)}
-                                                                className="flex-1 flex items-center justify-center px-3 py-2 bg-white/90 rounded-lg text-gray-700 hover:bg-white transition-colors"
+                                                                className="flex-1 flex items-center justify-center px-3 py-2 bg-yellow-400 rounded-lg text-gray-100 hover:bg-yellow-700 transition-colors"
                                                             >
                                                                 <Edit2 className="w-4 h-4 mr-1" />
                                                                 แก้ไข
