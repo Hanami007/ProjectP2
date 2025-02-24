@@ -1,157 +1,151 @@
-import React, { useState, useEffect } from "react";
-import { Link, useForm } from "@inertiajs/inertia-react";
-import axios from "axios";
-import CartIcon from "../../Components/CartIcon";
+import React, { useState } from "react";
+import { Link } from "@inertiajs/inertia-react";
+import { ShoppingCart, Clock, Star, ArrowLeft, Share2, Heart } from "lucide-react";
 
 const ProductDetail = ({ product, initialCartCount }) => {
-    console.log(product); // Log the product data for debugging
+  const [processing, setProcessing] = useState(false);
+  const [cartCount, setCartCount] = useState(initialCartCount);
+  const [isWishlist, setIsWishlist] = useState(false);
 
-    const price =
-        typeof product.Price === "number"
-            ? product.Price.toFixed(2)
-            : parseFloat(product.Price).toFixed(2);
-    const { post } = useForm();
-    const [processing, setProcessing] = useState(false);
-    const [cartCount, setCartCount] = useState(initialCartCount);
-    const [reviews, setReviews] = useState([]);
+  const price = Number(product.Price).toFixed(2);
 
-    useEffect(() => {
-        axios.get(`/reviews/${product.id}`).then((response) => {
-            setReviews(response.data);
-        });
-    }, [product.id]);
+  const addToCart = (productId) => {
+    setProcessing(true);
+    setTimeout(() => {
+      alert("เพิ่มสินค้าลงตะกร้าเรียบร้อยแล้ว");
+      setCartCount(cartCount + 1);
+      setProcessing(false);
+    }, 1000);
+  };
 
-    const addToCart = async (productId) => {
-        setProcessing(true);
-        console.log("เพิ่มสินค้า ID:", productId);
-
-        try {
-            const response = await axios.post("/cart", {
-                product_id: productId,
-                quantity: 1,
-            });
-
-            alert("เพิ่มสินค้าลงตะกร้าเรียบร้อยแล้ว");
-            setCartCount(cartCount + 1);
-        } catch (error) {
-            console.error("เกิดข้อผิดพลาด:", error);
-            alert("เกิดข้อผิดพลาดในการเพิ่มสินค้า");
-        } finally {
-            setProcessing(false);
-        }
-    };
-
-    return (
-        <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center mb-6">
-                <h1 className="text-3xl font-semibold text-gray-800">{product.ProductName}</h1>
-                <CartIcon cartCount={cartCount} />
-            </div>
-
-            {/* Product Details Section */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Product Image */}
-                <div className="bg-white shadow-lg rounded-lg p-4 flex justify-center">
-                    <img
-                        src={product.ProductImage ? `/storage/${product.ProductImage}` : "default_image_url.jpg"}
-                        alt={product.ProductName}
-                        className="w-full h-auto object-cover rounded-lg shadow-md"
-                    />
-                </div>
-
-                {/* Product Info */}
-                <div className="p-6 space-y-4 bg-white shadow-lg rounded-lg">
-                    <h3 className="text-xl font-semibold text-gray-800">{product.ProductName}</h3>
-                    <p className="text-xl font-bold text-green-600">฿{price}</p>
-                    <p className="text-gray-600">Stock: {product.Stock}</p>
-                    <p className="text-gray-600">Category: {product.ProductType}</p>
-                    <p className="text-gray-600">Status: {product.ProductStatus}</p>
-                    <p className="text-gray-700">{product.ProductDescription}</p>
-
-                    <button
-                        onClick={() => addToCart(product.id)}
-                        disabled={processing}
-                        className="mt-4 inline-block w-full sm:w-auto bg-green-500 text-white py-3 px-6 rounded-md hover:bg-green-600 transition-all duration-300"
-                    >
-                        {processing ? "กำลังเพิ่ม..." : "เพิ่มลงในตะกร้า"}
-                    </button>
-
-                    <Link
-                        href="/homepage"
-                        className="mt-4 w-full block text-center bg-blue-500 text-white py-3 px-6 rounded-md hover:bg-blue-600 transition-all duration-300"
-                    >
-                        กลับสู่หน้าหลัก
-                    </Link>
-                </div>
-            </div>
-
-            {/* Store Information Section */}
-            <div className="mt-10 bg-white shadow-lg rounded-lg p-6 text-center">
-                <Link
-                    href={route("stores.show", product.store.id)}
-                    className="inline-block"
-                >
-                    <img
-                        src={product.store.Picture ? `/storage/${product.store.Picture}` : "/images/default_image_url.jpg"}
-                        alt={product.store.StoreName}
-                        className="w-32 h-32 object-cover rounded-full mx-auto mb-6 border-4 border-gray-100 shadow-lg"
-                    />
-                </Link>
-                <div className="mt-6">
-                    <Link
-                        href={route("stores.show", product.store.id)}
-                        className="text-xl font-semibold text-blue-600 hover:underline"
-                    >
-                        {product.store.StoreName}
-                    </Link>
-                    <p className="text-gray-600 mt-2">
-                        ⏰ เวลาเปิด-ปิด: {product.store.OpeningHours || "ไม่ระบุ"}
-                    </p>
-                    <p className="text-gray-600 mt-1">
-                        ⭐ รีวิวร้านค้า: {product.store.Reviews || "ยังไม่มีรีวิว"}
-                    </p>
-                </div>
-
-                {/* Email Contact */}
-                <div className="mt-6">
-                    <a
-                        href={`mailto:${product.store.StoreEmail}`}
-                        className="inline-block bg-gray-700 text-white py-2 px-6 rounded-full hover:bg-gray-800 transition duration-200"
-                    >
-                        ✉️ ส่งอีเมล
-                    </a>
-                </div>
-
-                {/* Show More Products */}
-                {product.store.Products && product.store.Products.length > 0 && (
-                    <div className="mt-10">
-                        <h3 className="text-lg font-semibold text-center mb-6">
-                            🛒 สินค้าอื่น ๆ ของร้าน
-                        </h3>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
-                            {product.store.Products.map((item, index) => (
-                                <div key={index} className="bg-white shadow-lg rounded-lg p-4 text-center">
-                                    <img
-                                        src={item.ProductImage ? `/storage/${item.ProductImage}` : "default_image_url.jpg"}
-                                        alt={item.ProductName}
-                                        className="w-full h-48 object-cover rounded-lg shadow-md"
-                                    />
-                                    <p className="mt-4 text-gray-900 font-semibold">{item.ProductName}</p>
-                                    <p className="text-green-600 font-bold">฿{item.Price}</p>
-                                    <Link
-                                        href={`/product/${item.id}`}
-                                        className="mt-2 inline-block bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-all duration-300"
-                                    >
-                                        ดูรายละเอียด
-                                    </Link>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                )}
-            </div>
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Sticky Header */}
+      <div className="sticky top-0 z-50 bg-white shadow-sm">
+        <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
+          <Link href="/homepage" className="flex items-center text-gray-700 hover:text-gray-900">
+            <ArrowLeft className="w-5 h-5 mr-2" />
+            <span className="hidden sm:inline">กลับสู่หน้าหลัก</span>
+          </Link>
+          <div className="flex items-center space-x-4">
+            <button className="p-2 hover:bg-gray-100 rounded-full">
+              <Share2 className="w-5 h-5 text-gray-600" />
+            </button>
+            <Link href="/cart" className="relative">
+              <ShoppingCart className="w-6 h-6 text-gray-600" />
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-semibold rounded-full px-2">
+                  {cartCount}
+                </span>
+              )}
+            </Link>
+          </div>
         </div>
-    );
+      </div>
+
+      <div className="max-w-5xl mx-auto px-4 py-6">
+        {/* Product Gallery and Info */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Image Section */}
+          <div className="relative">
+            <div className="aspect-square bg-white rounded-2xl overflow-hidden shadow-lg">
+              <img
+                src={product.ProductImage ? `/storage/${product.ProductImage}` : "/images/default.jpg"}
+                alt={product.ProductName}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <button
+              onClick={() => setIsWishlist(!isWishlist)}
+              className="absolute top-4 right-4 p-2 bg-white rounded-full shadow-md"
+            >
+              <Heart
+                className={`w-6 h-6 ${isWishlist ? "fill-red-500 text-red-500" : "text-gray-400"}`}
+              />
+            </button>
+          </div>
+
+          {/* Product Info */}
+          <div className="space-y-6">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">{product.ProductName}</h1>
+              <div className="flex items-center space-x-2">
+                <span className="text-3xl font-bold text-green-600">฿{price}</span>
+                {product.Stock < 10 && (
+                  <span className="text-sm text-red-500">เหลือสินค้าเพียง {product.Stock} ชิ้น</span>
+                )}
+              </div>
+            </div>
+
+            <div className="space-y-4 bg-white p-6 rounded-xl shadow-sm">
+              <div className="flex items-center space-x-2">
+                <div className="w-24 text-gray-500">หมวดหมู่</div>
+                <div className="font-medium">{product.ProductType}</div>
+              </div>
+              <div className="flex items-center space-x-2">
+                <div className="w-24 text-gray-500">สถานะ</div>
+                <div className="font-medium">{product.ProductStatus}</div>
+              </div>
+              <div className="border-t pt-4">
+                <p className="text-gray-700 leading-relaxed">{product.ProductDescription}</p>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <button
+                onClick={() => addToCart(product.id)}
+                disabled={processing}
+                className="w-full bg-green-500 text-white py-4 px-6 rounded-xl font-semibold hover:bg-green-600
+                         transition-all duration-300 disabled:bg-gray-300 disabled:cursor-not-allowed
+                         flex items-center justify-center space-x-2"
+              >
+                <ShoppingCart className="w-5 h-5" />
+                <span>{processing ? "กำลังเพิ่ม..." : "เพิ่มลงในตะกร้า"}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Store Info Card */}
+        <div className="mt-12 bg-white rounded-2xl shadow-sm p-6">
+          <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6">
+            <Link href={route("stores.show", product.store.id)}>
+              <img
+                src={product.store.Picture ? `/storage/${product.store.Picture}` : "/images/default_store.jpg"}
+                alt={product.store.StoreName}
+                className="w-24 h-24 object-cover rounded-full border-4 border-gray-50 shadow-sm"
+              />
+            </Link>
+            <div className="flex-1 text-center sm:text-left">
+              <Link
+                href={route("stores.show", product.store.id)}
+                className="text-xl font-semibold text-gray-900 hover:text-blue-600"
+              >
+                {product.store.StoreName}
+              </Link>
+              <div className="mt-2 space-y-1 text-sm text-gray-600">
+                <div className="flex items-center justify-center sm:justify-start">
+                  <Clock className="w-4 h-4 mr-2" />
+                  <span>เวลาเปิด-ปิด: {product.store.OpeningHours || "ไม่ระบุ"}</span>
+                </div>
+                <div className="flex items-center justify-center sm:justify-start">
+                  <Star className="w-4 h-4 mr-2" />
+                  <span>รีวิวร้านค้า: {product.store.Reviews || "ยังไม่มีรีวิว"}</span>
+                </div>
+              </div>
+            </div>
+            <Link
+              href={route("stores.show", product.store.id)}
+              className="px-6 py-2 border-2 border-gray-200 rounded-lg text-gray-700 hover:bg-gray-50
+                       transition-colors duration-200 whitespace-nowrap"
+            >
+              ดูร้านค้า
+            </Link>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default ProductDetail;

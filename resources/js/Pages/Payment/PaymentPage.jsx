@@ -1,42 +1,57 @@
 import React from "react";
-import { Inertia } from "@inertiajs/inertia";
 import { useForm } from "@inertiajs/inertia-react";
 
 const PaymentPage = ({ order }) => {
-    const { data, setData, post, processing } = useForm({
-        receipt: null,
-    });
+    const { data, setData, post, processing } = useForm({ receipt: null });
 
     const handleUploadReceipt = (e) => {
-        setData("receipt", e.target.files[0]);
+        const file = e.target.files[0];
+        if (file) {
+            setData("receipt", file);
+        }
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
         post(`/payment/${order.id}/confirm`, {
             onSuccess: () => {
-                // Redirect ไปยังหน้าสถานะคำสั่งซื้อ
+                alert("อัปโหลดหลักฐานการโอนเงินเรียบร้อย ");
             },
         });
     };
 
     return (
-        <div className="container mx-auto p-6">
-            <h1 className="text-3xl font-semibold mb-6">ชำระเงินสำหรับคำสั่งซื้อ #{order.id}</h1>
-            <p>ยอดรวม: ฿{parseFloat(order['TotalAmount']).toFixed(2)}</p>            <form onSubmit={handleSubmit} className="mt-4">
-                <label className="block mb-2">อัพโหลดหลักฐานการโอนเงิน:</label>
+        <div className="max-w-lg mx-auto p-6 bg-white shadow-lg rounded-lg mt-10">
+            <h1 className="text-2xl font-semibold text-gray-800 text-center mb-6">
+                 ชำระเงินสำหรับคำสั่งซื้อ #{order.id}
+            </h1>
+
+            <p className="text-lg font-bold text-gray-700 text-center mb-4">
+                ยอดรวม: <span className="text-green-600">฿{parseFloat(order.TotalAmount).toFixed(2)}</span>
+            </p>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+                <label className="block text-gray-600 font-medium">
+                     อัพโหลดหลักฐานการโอนเงิน:
+                </label>
+
                 <input
                     type="file"
                     accept="image/*"
                     onChange={handleUploadReceipt}
-                    className="border p-2 rounded"
+                    className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
                 />
+
                 <button
                     type="submit"
                     disabled={processing || !data.receipt}
-                    className="mt-4 bg-green-500 text-white py-2 px-6 rounded-full hover:bg-green-600 disabled:bg-gray-400"
+                    className={`w-full py-3 text-white rounded-lg transition ${
+                        processing || !data.receipt
+                            ? "bg-gray-400 cursor-not-allowed"
+                            : "bg-green-500 hover:bg-green-600"
+                    }`}
                 >
-                    {processing ? "กำลังอัพโหลด..." : "ยืนยันการชำระเงิน"}
+                    {processing ? " กำลังอัพโหลด..." : " ยืนยันการชำระเงิน"}
                 </button>
             </form>
         </div>

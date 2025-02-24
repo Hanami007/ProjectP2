@@ -5,31 +5,31 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import FloatingCart from "@/components/FloatingCart";
 
 const ProductCard = ({ product, onAddToCart }) => (
-    <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out transform hover:scale-105">
+    <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out transform hover:scale-[1.02] overflow-hidden">
         <div className="relative group">
             <img
                 src={product.ProductImage ? `/storage/${product.ProductImage}` : "default_image_url.jpg"}
                 alt={product.ProductName}
-                className="w-full h-48 object-cover rounded-t-xl"
+                className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
             />
-            <div className="absolute inset-0 bg-blue-600 bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300"></div>
+            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300"></div>
         </div>
-        <div className="p-4">
-            <h3 className="text-lg font-semibold text-gray-800 mb-2">{product.ProductName}</h3>
-            <p className="text-blue-600 font-bold text-xl mb-4">
+        <div className="p-5">
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">{product.ProductName}</h3>
+            <p className="text-blue-600 font-bold text-2xl mb-4">
                 ฿{typeof product.Price === "number" ? product.Price.toFixed(2) : product.Price}
             </p>
             <div className="flex flex-col sm:flex-row gap-2">
                 <button
                     onClick={() => onAddToCart(product.id)}
-                    className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center gap-2"
+                    className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 text-white py-2 px-4 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 flex items-center justify-center gap-2"
                 >
                     <ShoppingCart size={18} />
                     <span>Add to Cart</span>
                 </button>
                 <Link
                     href={`/products/${product.id}`}
-                    className="flex-1 bg-blue-100 text-blue-600 py-2 px-4 rounded-lg hover:bg-blue-200 transition-colors duration-200 flex items-center justify-center gap-2"
+                    className="flex-1 bg-blue-50 text-blue-600 py-2 px-4 rounded-lg hover:bg-blue-100 transition-all duration-200 flex items-center justify-center gap-2"
                 >
                     <Eye size={18} />
                     <span>Details</span>
@@ -40,30 +40,30 @@ const ProductCard = ({ product, onAddToCart }) => (
 );
 
 const FeaturedProduct = ({ product, onAddToCart }) => (
-    <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl p-6 text-white">
+    <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl p-6 text-white shadow-2xl">
         <div className="flex flex-col md:flex-row items-center gap-8">
             <img
                 src={product.ProductImage ? `/storage/${product.ProductImage}` : "default_image_url.jpg"}
                 alt={product.ProductName}
-                className="w-64 h-64 object-cover rounded-xl shadow-lg"
+                className="w-64 h-64 object-cover rounded-2xl shadow-lg"
             />
             <div className="flex-1 text-center md:text-left">
-                <h2 className="text-3xl font-bold mb-4">{product.ProductName}</h2>
+                <h2 className="text-4xl font-bold mb-4">{product.ProductName}</h2>
                 <p className="text-blue-100 mb-2">Featured Product</p>
-                <p className="text-2xl font-bold mb-6">
+                <p className="text-3xl font-bold mb-6">
                     ฿{typeof product.Price === "number" ? product.Price.toFixed(2) : product.Price}
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4">
                     <button
                         onClick={() => onAddToCart(product.id)}
-                        className="bg-white text-blue-600 py-2 px-6 rounded-lg hover:bg-blue-50 transition-colors duration-200 flex items-center justify-center gap-2"
+                        className="bg-white text-blue-600 py-2 px-6 rounded-lg hover:bg-blue-50 transition-all duration-200 flex items-center justify-center gap-2"
                     >
                         <ShoppingCart size={18} />
                         <span>Add to Cart</span>
                     </button>
                     <Link
                         href={`/products/${product.id}`}
-                        className="bg-blue-700 text-white py-2 px-6 rounded-lg hover:bg-blue-800 transition-colors duration-200 flex items-center justify-center gap-2"
+                        className="bg-blue-700 text-white py-2 px-6 rounded-lg hover:bg-blue-800 transition-all duration-200 flex items-center justify-center gap-2"
                     >
                         <Eye size={18} />
                         <span>View Details</span>
@@ -113,7 +113,7 @@ const Homepage = ({ products }) => {
     return (
         <AuthenticatedLayout>
             <Head title="Online Shop" />
-            <div className="min-h-screen bg-gray-50">
+            <div className="min-h-screen bg-gradient-to-r from-blue-50 to-purple-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     {/* Header & Search */}
                     <div className="mb-8">

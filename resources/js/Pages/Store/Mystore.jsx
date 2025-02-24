@@ -1,264 +1,220 @@
 import React, { useState } from "react";
 import { Head, useForm, Link } from "@inertiajs/react";
+import { Store, Package, Phone, MapPin, Edit2, Trash2, Plus, AlertCircle } from "lucide-react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 
 const Mystore = ({ store, products }) => {
-    const { delete: destroy, post, patch, processing } = useForm();
-    const [editingProduct, setEditingProduct] = useState(null);
+    const { delete: destroy, processing } = useForm();
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
     const handleDelete = () => {
-        if (confirm("คุณแน่ใจหรือไม่ว่าต้องการลบร้านค้านี้?")) {
-            destroy(route("stores.destroy", store.id));
-        }
+        setShowDeleteConfirm(false);
+        destroy(route("stores.destroy", store.id));
     };
 
-    const handleAddProduct = (e) => {
-        e.preventDefault();
-        post(route("products.store"), {
-            data: {
-                ProductName: e.target.ProductName.value,
-                Price: e.target.Price.value,
-                ProductDescription: e.target.ProductDescription.value,
-                id_stores: store.id,
-            },
-        });
-    };
-
-    const handleEditProduct = (e) => {
-        e.preventDefault();
-        patch(route("products.update", editingProduct.id), {
-            data: {
-                ProductName: e.target.elements.ProductName.value,
-                Price: e.target.elements.Price.value,
-                ProductDescription: e.target.elements.ProductDescription.value,
-            },
-        });
-        setEditingProduct(null);
-    };
+    const StoreStats = () => (
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
+            <div className="p-4 bg-white dark:bg-gray-700 rounded-lg shadow-sm">
+                <p className="text-sm text-gray-500 dark:text-gray-400">สินค้าทั้งหมด</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">{products?.length || 0}</p>
+            </div>
+            <div className="p-4 bg-white dark:bg-gray-700 rounded-lg shadow-sm">
+                <p className="text-sm text-gray-500 dark:text-gray-400">ยอดขายวันนี้</p>
+                <p className="text-2xl font-bold text-green-600 dark:text-green-400">฿0</p>
+            </div>
+            <div className="p-4 bg-white dark:bg-gray-700 rounded-lg shadow-sm">
+                <p className="text-sm text-gray-500 dark:text-gray-400">คำสั่งซื้อที่รอ</p>
+                <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">0</p>
+            </div>
+            <div className="p-4 bg-white dark:bg-gray-700 rounded-lg shadow-sm">
+                <p className="text-sm text-gray-500 dark:text-gray-400">รีวิวร้านค้า</p>
+                <p className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">0</p>
+            </div>
+        </div>
+    );
 
     return (
         <AuthenticatedLayout
             header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                    My Store
-                </h2>
+                <div className="flex items-center justify-center space-x-2">
+                    <Store className="w-6 h-6" />
+                    <h2 className="text-2xl font-bold">My Store</h2>
+                </div>
             }
         >
             <Head title="My Store" />
 
-            <div className="py-12">
-                <div className="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
-                    <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8 dark:bg-gray-800">
-                        <div className="max-w-xl">
-                            <h1 className="text-3xl font-semibold text-center mb-8">
-                                ข้อมูลร้านค้าของฉัน
-                            </h1>
-                            {store ? (
-                                <div className="space-y-4">
-                                    <div className="flex items-center">
+            <div className="py-6 px-4 sm:px-6">
+                <div className="max-w-6xl mx-auto space-y-6">
+                    {store ? (
+                        <>
+                            {/* Store Profile Card */}
+                            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg overflow-hidden">
+                                <div className="relative h-32 bg-gradient-to-r from-blue-500 to-purple-600">
+                                    <div className="absolute -bottom-16 left-6">
                                         <img
-                                            src={
-                                                store.Picture
-                                                    ? `/storage/${store.Picture}`
-                                                    : "/images/default_image_url.jpg" // ใช้ path ที่ถูกต้องสำหรับรูป default
-                                            }
-                                            alt={store.StoreName} // เปลี่ยนจาก alt={store.Picture} เป็น alt={store.StoreName}
-                                            className="w-32 h-32 object-cover rounded-full mx-auto"
+                                            src={store.Picture ? `/storage/${store.Picture}` : "/images/default_image.jpg"}
+                                            alt={store.StoreName}
+                                            className="w-32 h-32 object-cover rounded-xl border-4 border-white dark:border-gray-800 shadow-lg"
                                         />
                                     </div>
-                                    <div className="flex items-center">
-                                        <span className="font-medium text-gray-700 dark:text-gray-300">
-                                            ชื่อร้านค้า:
-                                        </span>
-                                        <span className="ml-2 text-gray-900 dark:text-gray-100">
-                                            {store.StoreName}
-                                        </span>
-                                    </div>
-                                    <div className="flex items-center">
-                                        <span className="font-medium text-gray-700 dark:text-gray-300">
-                                            เจ้าของร้าน:
-                                        </span>
-                                        <span className="ml-2 text-gray-900 dark:text-gray-100">
-                                            {store.ownerName}
-                                        </span>
-                                    </div>
-                                    <div className="flex items-center">
-                                        <span className="font-medium text-gray-700 dark:text-gray-300">
-                                            เบอร์โทรศัพท์:
-                                        </span>
-                                        <span className="ml-2 text-gray-900 dark:text-gray-100">
-                                            {store.PhoneNumber}
-                                        </span>
-                                    </div>
-                                    <div className="flex items-center">
-                                        <span className="font-medium text-gray-700 dark:text-gray-300">
-                                            ที่อยู่:
-                                        </span>
-                                        <span className="ml-2 text-gray-900 dark:text-gray-100">
-                                            {store.Address}
-                                        </span>
-                                    </div>
-                                    <div className="flex items-center">
-                                        <span className="font-medium text-gray-700 dark:text-gray-300">
-                                            สถานะร้านค้า:
-                                        </span>
-                                        <span className="ml-2 text-gray-900 dark:text-gray-100">
+                                </div>
+
+                                <div className="pt-20 px-6 pb-6">
+                                    <div className="flex flex-wrap items-center justify-between gap-4">
+                                        <div>
+                                            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                                                {store.StoreName}
+                                            </h1>
+                                            <p className="text-gray-500 dark:text-gray-400">
+                                                เจ้าของ: {store.ownerName}
+                                            </p>
+                                        </div>
+                                        <span className={`px-4 py-2 rounded-full text-sm font-medium ${
+                                            store.StoreStatus === 'เปิด'
+                                            ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                                            : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+                                        }`}>
                                             {store.StoreStatus}
                                         </span>
                                     </div>
-                                    <div className="mt-6">
+
+                                    <div className="mt-6 space-y-2">
+                                        <div className="flex items-center text-gray-600 dark:text-gray-300">
+                                            <Phone className="w-5 h-5 mr-2" />
+                                            <span>{store.PhoneNumber}</span>
+                                        </div>
+                                        <div className="flex items-center text-gray-600 dark:text-gray-300">
+                                            <MapPin className="w-5 h-5 mr-2" />
+                                            <span>{store.Address}</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="mt-6 flex flex-wrap gap-3">
                                         <button
-                                            onClick={handleDelete}
-                                            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:bg-red-700"
+                                            onClick={() => setShowDeleteConfirm(true)}
+                                            className="flex items-center px-4 py-2 text-red-600 bg-red-50 hover:bg-red-100
+                                                     dark:bg-red-900/20 dark:hover:bg-red-900/40 dark:text-red-400
+                                                     rounded-lg transition-colors"
                                             disabled={processing}
                                         >
+                                            <Trash2 className="w-4 h-4 mr-2" />
                                             ลบร้านค้า
                                         </button>
-                                    </div>
-                                    <div className="mt-6">
                                         <Link
                                             href={route("products.create")}
-                                            className="text-blue-500 hover:text-blue-700"
+                                            className="flex items-center px-4 py-2 text-white bg-blue-600 hover:bg-blue-700
+                                                     dark:bg-blue-600 dark:hover:bg-blue-700 rounded-lg transition-colors"
                                         >
+                                            <Plus className="w-4 h-4 mr-2" />
                                             เพิ่มสินค้า
                                         </Link>
                                     </div>
-                                    <div className="mt-6">
-                                        <h2 className="text-xl font-semibold mb-4">
-                                            Products:
-                                        </h2>
-                                        <div className="flex flex-wrap gap-4 justify-center">
-                                            {products && products.length > 0 ? (
-                                                products.map((product) => (
-                                                    <div
-                                                        key={product.id}
-                                                        className="p-4 border border-gray-300 rounded-md shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col items-center w-64"
-                                                    >
-                                                        <img
-                                                            src={
-                                                                product.ProductImage
-                                                                    ? `/storage/${product.ProductImage}`
-                                                                    : "default_image_url.jpg"
-                                                            }
-                                                            alt={
-                                                                product.ProductName
-                                                            }
-                                                            className="w-32 h-32 object-cover rounded-full mx-auto"
-                                                        />
-                                                        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                                                            {
-                                                                product.ProductName
-                                                            }
-                                                        </h3>
-                                                        <p className="text-gray-700 dark:text-gray-300">
-                                                            {
-                                                                product.ProductDescription
-                                                            }
-                                                        </p>
-                                                        <p className="text-gray-700 dark:text-gray-300">
-                                                            ราคา:{" "}
-                                                            {product.Price}
-                                                        </p>
-                                                        <div className="mt-2 flex space-x-2">
+                                </div>
+                            </div>
+
+                            {/* Store Stats */}
+                            <StoreStats />
+
+                            {/* Products Grid */}
+                            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6">
+                                <h2 className="text-xl font-semibold mb-6 flex items-center text-gray-900 dark:text-white">
+                                    <Package className="w-5 h-5 mr-2" />
+                                    รายการสินค้า
+                                </h2>
+
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {products && products.length > 0 ? (
+                                        products.map((product) => (
+                                            <div
+                                                key={product.id}
+                                                className="group bg-gray-50 dark:bg-gray-800 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300"
+                                            >
+                                                <div className="relative aspect-square">
+                                                    <img
+                                                        src={product.ProductImage ? `/storage/${product.ProductImage}` : "/images/default_product.jpg"}
+                                                        alt={product.ProductName}
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                        <div className="absolute bottom-4 left-4 right-4 flex justify-center gap-2">
                                                             <Link
-                                                                href={route(
-                                                                    "products.edit",
-                                                                    product.id
-                                                                )}
-                                                                className="bg-blue-500 text-white py-1 px-3 rounded-full hover:bg-blue-600 transition duration-200"
+                                                                href={route("products.edit", product.id)}
+                                                                className="flex-1 flex items-center justify-center px-3 py-2 bg-white/90 rounded-lg text-gray-700 hover:bg-white transition-colors"
                                                             >
+                                                                <Edit2 className="w-4 h-4 mr-1" />
                                                                 แก้ไข
                                                             </Link>
-
                                                             <button
-                                                                onClick={() =>
-                                                                    destroy(
-                                                                        route(
-                                                                            "products.destroy",
-                                                                            product.id
-                                                                        )
-                                                                    )
-                                                                }
-                                                                className="bg-red-500 text-white py-1 px-3 rounded-full hover:bg-red-600 transition duration-200"
+                                                                onClick={() => destroy(route("products.destroy", product.id))}
+                                                                className="flex-1 flex items-center justify-center px-3 py-2 bg-red-500/90 rounded-lg text-white hover:bg-red-500 transition-colors"
                                                             >
+                                                                <Trash2 className="w-4 h-4 mr-1" />
                                                                 ลบ
                                                             </button>
                                                         </div>
                                                     </div>
-                                                ))
-                                            ) : (
-                                                <p className="text-center text-gray-500">
-                                                    ไม่มีสินค้าในร้านนี้
-                                                </p>
-                                            )}
-                                        </div>
-                                    </div>
-                                    {editingProduct && (
-                                        <div className="mt-6">
-                                            <h2 className="text-2xl font-semibold text-center mb-4">
-                                                แก้ไขสินค้า
-                                            </h2>
-                                            <form onSubmit={handleEditProduct}>
-                                                <div className="mb-4">
-                                                    <label className="block text-gray-700 dark:text-gray-300">
-                                                        ชื่อสินค้า
-                                                    </label>
-                                                    <input
-                                                        type="text"
-                                                        name="ProductName"
-                                                        defaultValue={
-                                                            editingProduct.ProductName
-                                                        }
-                                                        className="w-full px-4 py-2 border rounded-md dark:bg-gray-700 dark:text-gray-300"
-                                                        required
-                                                    />
                                                 </div>
-                                                <div className="mb-4">
-                                                    <label className="block text-gray-700 dark:text-gray-300">
-                                                        ราคา
-                                                    </label>
-                                                    <input
-                                                        type="number"
-                                                        name="Price"
-                                                        defaultValue={
-                                                            editingProduct.Price
-                                                        }
-                                                        className="w-full px-4 py-2 border rounded-md dark:bg-gray-700 dark:text-gray-300"
-                                                        required
-                                                    />
+                                                <div className="p-4">
+                                                    <h3 className="font-semibold text-gray-900 dark:text-white">
+                                                        {product.ProductName}
+                                                    </h3>
+                                                    <p className="mt-1 text-sm text-gray-500 dark:text-gray-400 line-clamp-2">
+                                                        {product.ProductDescription}
+                                                    </p>
+                                                    <p className="mt-2 text-lg font-bold text-blue-600 dark:text-blue-400">
+                                                        ฿{product.Price}
+                                                    </p>
                                                 </div>
-                                                <div className="mb-4">
-                                                    <label className="block text-gray-700 dark:text-gray-300">
-                                                        รายละเอียด
-                                                    </label>
-                                                    <textarea
-                                                        name="ProductDescription"
-                                                        defaultValue={
-                                                            editingProduct.ProductDescription
-                                                        }
-                                                        className="w-full px-4 py-2 border rounded-md dark:bg-gray-700 dark:text-gray-300"
-                                                    ></textarea>
-                                                </div>
-                                                <button
-                                                    type="submit"
-                                                    className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:bg-green-700"
-                                                    disabled={processing}
-                                                >
-                                                    บันทึกการแก้ไข
-                                                </button>
-                                            </form>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div className="col-span-full flex flex-col items-center justify-center p-8 text-gray-500 dark:text-gray-400">
+                                            <AlertCircle className="w-12 h-12 mb-2" />
+                                            <p>ไม่มีสินค้าในร้านนี้</p>
                                         </div>
                                     )}
                                 </div>
-                            ) : (
-                                <p className="text-center text-gray-500 dark:text-gray-400">
-                                    คุณยังไม่มีร้านค้า
-                                </p>
-                            )}
+                            </div>
+                        </>
+                    ) : (
+                        <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-12 text-center">
+                            <Store className="w-16 h-16 mx-auto text-gray-400 dark:text-gray-600 mb-4" />
+                            <p className="text-xl text-gray-500 dark:text-gray-400">
+                                คุณยังไม่มีร้านค้า
+                            </p>
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {/* Delete Confirmation Modal */}
+            {showDeleteConfirm && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+                    <div className="bg-white dark:bg-gray-800 rounded-xl p-6 max-w-sm w-full">
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                            ยืนยันการลบร้านค้า
+                        </h3>
+                        <p className="text-gray-600 dark:text-gray-300 mb-6">
+                            คุณแน่ใจหรือไม่ว่าต้องการลบร้านค้านี้? การดำเนินการนี้ไม่สามารถยกเลิกได้
+                        </p>
+                        <div className="flex justify-end gap-3">
+                            <button
+                                onClick={() => setShowDeleteConfirm(false)}
+                                className="px-4 py-2 text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                            >
+                                ยกเลิก
+                            </button>
+                            <button
+                                onClick={handleDelete}
+                                className="px-4 py-2 bg-red-600 text-white hover:bg-red-700 rounded-lg transition-colors"
+                            >
+                                ลบร้านค้า
+                            </button>
                         </div>
                     </div>
                 </div>
-            </div>
+            )}
         </AuthenticatedLayout>
     );
 };
