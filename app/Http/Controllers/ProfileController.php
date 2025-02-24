@@ -65,7 +65,7 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
         // ดึงข้อมูลคำสั่งซื้อและรายละเอียดสินค้าที่ผู้ใช้ทำ
-        $orders = $user->orders()->with('orderDetails.product', 'deliveries')->get();
+        $orders = $user->orders()->with('orderDetails.product', 'delivery')->get();
 
         return Inertia::render('Profile/UserOrders', [
             'orders' => $orders,
@@ -73,4 +73,6 @@ class ProfileController extends Controller
     }
 
     
+
+
 }

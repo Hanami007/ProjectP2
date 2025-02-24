@@ -1,44 +1,35 @@
-// UserOrders.jsx
 import React from "react";
 import { Head } from "@inertiajs/react";
+import { Inertia } from "@inertiajs/inertia";
 
-const UserOrders = ({ orders }) => {
+const UserOrders = ({ orders = [] }) => {
     return (
         <>
             <Head title="Your Orders" />
-            <div className="container">
-                <h2>Your Orders</h2>
+            <div className="max-w-4xl mx-auto p-6">
+                <h2 className="text-2xl font-semibold mb-4">Your Orders</h2>
                 {orders.length > 0 ? (
-                    <div>
+                    <div className="space-y-4">
                         {orders.map((order) => (
-                            <div key={order.id} className="order-item">
-                                <h3>Order ID: {order.id}</h3>
-                                <p>Status: {order.order_status}</p>
-                                <p>Total: ${order.total_amount}</p>
+                            <div key={order.id} className="p-4 border rounded-lg shadow-sm bg-white">
+                                <h3 className="text-lg font-medium">Order ID: {order.id}</h3>
+                                <p className="text-gray-600">Status: {order.OrderStatus}</p>
+                                <p className="text-gray-600">Total: ${order.TotalAmount}</p>
 
-                                <h4>Products:</h4>
-                                <ul>
-                                    {order.order_details.map((detail) => (
+                                <h4 className="font-semibold mt-2">Products:</h4>
+                                <ul className="list-disc list-inside text-gray-700">
+                                    {order.order_details?.map((detail) => (
                                         <li key={detail.id}>
-                                            <strong>{detail.product.product_name}</strong>
-                                            - Quantity: {detail.quantity}
-                                            - ${detail.unit_price} each
+                                            <strong>{detail.product?.ProductName || "Unknown Product"}</strong>
+                                            - {detail.quantity}
                                         </li>
                                     ))}
                                 </ul>
-
-                                <h4>Delivery Info:</h4>
-                                {order.deliveries.map((delivery) => (
-                                    <p key={delivery.id}>
-                                        Shipper: {delivery.shipper_name}
-                                        | Status: {delivery.delivery_status}
-                                        | Delivered: {delivery.delivery_date ? 'Yes' : 'No'}
-                                    </p>
-                                ))}
-
-                                {/* Confirm Receipt Button */}
-                                {!order.deliveries.some(delivery => delivery.delivery_status === 'received') && (
-                                    <button onClick={() => confirmReceipt(order.id)}>
+                                {order.OrderStatus !== 'Completed' && (
+                                    <button
+                                        onClick={() => confirmReceipt(order.id)}
+                                        className="mt-3 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                                    >
                                         Confirm Receipt
                                     </button>
                                 )}
@@ -46,18 +37,26 @@ const UserOrders = ({ orders }) => {
                         ))}
                     </div>
                 ) : (
-                    <p>You have no orders yet.</p>
+                    <p className="text-gray-500">You have no orders yet.</p>
                 )}
             </div>
         </>
     );
 };
 
+
 const confirmReceipt = (orderId) => {
-    // ส่งคำขอยืนยันการรับสินค้า
-    Inertia.post(`/orders/${orderId}/confirm-receipt`, {
-        orderId,
+    Inertia.post(`/orders/${orderId}/confirm-receipt`, {}, {
+        onSuccess: () => {
+            Inertia.reload({ only: ["orders"] });
+        },
+        onError: (error) => {
+            // แสดงข้อผิดพลาด หรือข้อความเตือน
+            console.error(error);
+        }
     });
 };
+
+
 
 export default UserOrders;

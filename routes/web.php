@@ -32,6 +32,7 @@ Route::get('/orders/{order}/payment', [OrderController::class, 'showPayment'])->
 Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
 Route::get('/orders/orderdetail/{id}', [OrderController::class, 'show'])->name('orders.show');
 Route::get('/wallet/topup', [WalletController::class, 'showTopupForm'])->name('wallet.topup');
+Route::post('/orders/{order}/confirm-receipt', [OrderController::class, 'confirmReceipt']);
 
 
 Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');

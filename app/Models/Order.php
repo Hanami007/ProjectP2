@@ -40,4 +40,13 @@ class Order extends Model
         return $this->belongsToMany(Product::class, 'order_details', 'order_id', 'product_id')
                     ->withPivot('Quantity', 'UnitPrice', 'Discount'); // รวมฟิลด์จากตารางตัวกลาง
     }
+    public function orderDetails()
+    {
+
+        return $this->hasMany(OrderDetail::class, 'order_id');
+    }
+    public function deliveries()
+    {
+        return $this->hasMany(Delivery::class, 'order_id');
+    }
 }
