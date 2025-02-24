@@ -26,12 +26,24 @@ const UserOrders = ({ orders = [] }) => {
                                         </li>
                                     ))}
                                 </ul>
+
+                                {/* ปุ่ม Confirm Receipt */}
                                 {order.OrderStatus !== 'Completed' && (
                                     <button
                                         onClick={() => confirmReceipt(order.id)}
                                         className="mt-3 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
                                     >
                                         Confirm Receipt
+                                    </button>
+                                )}
+
+                                {/* ปุ่ม Delete Order */}
+                                {order.OrderStatus === 'Completed' && (
+                                    <button
+                                        onClick={() => deleteOrder(order.id, order.OrderStatus)}
+                                        className="mt-3 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+                                    >
+                                        Delete Order
                                     </button>
                                 )}
                             </div>
@@ -45,6 +57,7 @@ const UserOrders = ({ orders = [] }) => {
     );
 };
 
+// ฟังก์ชันการยืนยันการรับสินค้า
 const confirmReceipt = (orderId) => {
     Inertia.post(`/orders/${orderId}/confirm-receipt`, {}, {
         onSuccess: () => {
@@ -54,6 +67,25 @@ const confirmReceipt = (orderId) => {
             console.error(error);
         }
     });
+};
+
+// ฟังก์ชันการลบคำสั่งซื้อ
+const deleteOrder = (orderId, orderStatus) => {
+    if (orderStatus !== 'Completed') {
+        alert('You can only delete orders with status "Completed".');
+        return;
+    }
+
+    if (window.confirm('Are you sure you want to delete this order?')) {
+        Inertia.delete(route('orders.destroy', orderId), {
+            onSuccess: () => {
+                Inertia.reload({ only: ['orders'] }); // รีเฟรชข้อมูลคำสั่งซื้อ
+            },
+            onError: (error) => {
+                console.error(error);
+            }
+        });
+    }
 };
 
 export default UserOrders;
