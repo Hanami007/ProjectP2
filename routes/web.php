@@ -31,9 +31,9 @@ Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
 Route::get('/orders/{order}/payment', [OrderController::class, 'showPayment'])->name('orders.payment');
 Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
 Route::get('/orders/orderdetail/{id}', [OrderController::class, 'show'])->name('orders.show');
-Route::get('/wallet/topup', [WalletController::class, 'showTopupForm'])->name('wallet.topup');
 Route::post('/orders/{order}/confirm-receipt', [OrderController::class, 'confirmReceipt']);
-
+Route::delete('/orders/{order}', [OrderController::class, 'destroy'])->name('orders.destroy');
+Route::middleware(['auth'])->get('/profile/orders', [OrderController::class, 'index'])->name('profile.orders');
 
 Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
 Route::get('/homepage', [ProductController::class, 'index'])->name('homepage.index');

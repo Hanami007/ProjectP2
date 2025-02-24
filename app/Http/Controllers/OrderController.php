@@ -100,4 +100,19 @@ class OrderController extends Controller
     return redirect()->back()->with('success', 'Order has been confirmed.');
 }
 
+public function destroy(Order $order)
+{
+    // ตรวจสอบสิทธิ์การลบคำสั่งซื้อ
+    if ($order->user_id != auth()->id()) {
+        abort(403, 'Unauthorized action.');
+    }
+
+    // ลบคำสั่งซื้อ
+    $order->delete();
+
+    // ส่งข้อความกลับหลังจากลบสำเร็จ
+    return redirect()->route('profile.orders')->with('success', 'Order deleted successfully.');
+}
+
+
 }
