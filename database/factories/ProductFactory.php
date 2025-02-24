@@ -20,7 +20,7 @@ class ProductFactory extends Factory
             'CreatedAt' => $this->faker->dateTimeThisYear(),
             'ProductType' => $this->faker->word,
             'ProductStatus' => 'available',
-            'ProductImage' => $this->faker->imageUrl(),
+            'ProductImage' => $this->faker->imageUrl(640, 480, 'products', true, 'Faker'),
             'ProductDescription' => $this->faker->paragraph,
         ];
     }
