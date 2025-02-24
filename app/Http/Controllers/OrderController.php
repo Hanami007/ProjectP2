@@ -1,6 +1,5 @@
 <?php
 namespace App\Http\Controllers;
-
 use App\Models\Order;
 use Inertia\Inertia;
 
@@ -12,6 +11,7 @@ class OrderController extends Controller
         $orders = Order::with(['user', 'products']) // ดึงข้อมูลผู้ใช้และสินค้า
             ->where('OrderStatus', 'pending')
             ->get();
+
 
         // ส่งข้อมูลไปยังหน้า React
         return Inertia::render('Orders/OrderPending', [
@@ -30,9 +30,9 @@ class OrderController extends Controller
     $order = Order::with('user', 'order_details.product') // ใช้ eager loading ดึงข้อมูลจาก product
         ->find($id);
 
-        if (!$order) {
-            return response()->json(['message' => 'Order not found'], 404);
-        }
+    if (!$order) {
+        return response()->json(['message' => 'Order not found'], 404);
+    }
 
     return Inertia::render('Orders/OrderDetail', [
         'order' => [
@@ -55,11 +55,13 @@ class OrderController extends Controller
                 ];
             }),
             'user' => [
-                'name' => $order->user->Name
+                'name' => $order->user->Name,
+                'address' => $order->user->Address // เพิ่มที่อยู่ของผู้ใช้
             ]
         ]
-        ]);
-    }
+    ]);
+}
+
 
     // ฟังก์ชันอัปเดตสถานะคำสั่งซื้อ
     public function updateOrderStatus(Order $order)

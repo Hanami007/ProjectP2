@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from '@inertiajs/inertia-react';
 
-const OrderDetail = ({ order }) => {
+const OrderDetail = ({ order }) => {  // ลบ user ออก, ใช้ order เพื่อเข้าถึงข้อมูลของ user
     return (
         <div className="container mx-auto p-6">
             {/* Header */}
@@ -13,12 +13,15 @@ const OrderDetail = ({ order }) => {
             <div className="bg-white shadow-lg rounded-xl p-6 mb-8 border border-gray-200">
                 <h2 className="text-xl font-semibold text-gray-700">Order ID: {order.id}</h2>
                 <p className="text-gray-600">
-                    <span className="font-medium">Customer:</span> {order.user_id || 'Unknown'}
+                    <span className="font-medium">Customer:</span> {order.user.name || 'Unknown'} {/* ใช้ order.user */}
+                </p>
+                <p className="text-gray-600">
+                    <span className="font-medium">Address:</span> {order.user.address || 'Address not available'} {/* ใช้ order.user */}
                 </p>
                 <p className="text-gray-600">
                     <span className="font-medium">Payment Status:</span>
                     <span className={`ml-2 px-3 py-1 rounded-full text-white
-                        ${order.payment_status === 'paid' ? 'bg-green-500' : 'bg-yellow-500'}`}>
+                        ${order.payment_status === 'paid' ? 'bg-green-500' : 'bg-yellow-500'}`} >
                         {order.payment_status}
                     </span>
                 </p>
@@ -49,7 +52,7 @@ const OrderDetail = ({ order }) => {
                                     <td className="border px-6 py-3">{detail.product?.ProductName || 'Unknown'}</td>
                                     <td className="border px-6 py-3 font-semibold text-gray-700">{detail.Quantity}</td>
                                     <td className="border px-6 py-3 text-blue-600 font-medium">
-                                        ${detail.UnitPrice.toFixed(2)} {/* ใช้ UnitPrice ที่เป็นราคาของสินค้า */}
+                                        ${detail.UnitPrice.toFixed(2)}
                                     </td>
                                     <td className="border px-6 py-3 text-green-600 font-semibold">
                                         ${(detail.Quantity * detail.UnitPrice).toFixed(2)}

@@ -16,7 +16,7 @@ const OrderPending = ({ orders }) => {
                                 <th className="border px-6 py-3">Total Amount</th>
                                 <th className="border px-6 py-3">สถานะการจัดส่ง</th>
                                 <th className="border px-6 py-3">สถานะการชำระเงิน</th>
-                                <th className="border px-6 py-3 text-center">Action</th>
+                                <th className="border px-6 py-3 text-center">ข้อมูลการสั่งซื้อ</th>
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
@@ -35,7 +35,7 @@ const OrderPending = ({ orders }) => {
                                                 href={`/orders/orderdetail/${order.id}`}
                                                 className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition-all"
                                             >
-                                                View Details
+                                                ดูรายละเอียด
                                             </Link>
                                         </td>
                                     </tr>
