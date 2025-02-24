@@ -24,6 +24,7 @@ class Order extends Model
         return $this->hasOne(Payment::class, 'order_id');
     }
 
+
     public function delivery()
     {
         return $this->hasOne(Delivery::class, 'order_id');
@@ -32,5 +33,11 @@ class Order extends Model
     public function items()
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function products()
+    {
+        return $this->belongsToMany(Product::class, 'order_details', 'order_id', 'product_id')
+                    ->withPivot('Quantity', 'UnitPrice', 'Discount'); // รวมฟิลด์จากตารางตัวกลาง
     }
 }
