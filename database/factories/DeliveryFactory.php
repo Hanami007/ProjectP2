@@ -13,7 +13,7 @@ class DeliveryFactory extends Factory
     public function definition()
     {
         return [
-            'id_order' => Order::factory(),
+            'order_id' => Order::factory(),
             'ShipperName' => $this->faker->name,
             'Email' => $this->faker->safeEmail,
             'Phone' => $this->faker->phoneNumber,

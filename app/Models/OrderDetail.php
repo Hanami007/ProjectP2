@@ -1,31 +1,22 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 class OrderDetail extends Model
 {
     use HasFactory;
-    protected $table = 'order_details';
 
-    protected $fillable = [
-        'id_order',
-        'ProductID',
-        'Quantity',
-        'UnitPrice',
-        'Discount',
-        'ChangeReason',
-        'ChangeDate',
-    ];
+    protected $table = 'order_details'; // ระบุชื่อตารางที่ถูกต้อง
+    protected $fillable = ['order_id', 'product_id', 'quantity', 'price'];
 
     public function order()
     {
-        return $this->belongsTo(Order::class, 'id_order');
+        return $this->belongsTo(Order::class);
     }
-
     public function product()
     {
-        return $this->belongsTo(Product::class, 'ProductID');
+        return $this->belongsTo(Product::class, 'product_id');
     }
 }

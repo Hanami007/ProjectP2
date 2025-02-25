@@ -1,9 +1,9 @@
+import React, { useState, useEffect } from "react";
+import { Link, usePage } from "@inertiajs/react";
 import ApplicationLogo from "@/Components/ApplicationLogo";
 import Dropdown from "@/Components/Dropdown";
 import NavLink from "@/Components/NavLink";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
-import { Link, usePage } from "@inertiajs/react";
-import { useState, useEffect } from "react";
 import axios from "axios";
 
 export default function AuthenticatedLayout({ header, children }) {
@@ -15,7 +15,7 @@ export default function AuthenticatedLayout({ header, children }) {
 
     useEffect(() => {
         if (user) {
-            axios.get(route('user.store')).then(response => {
+            axios.get(route("user.store")).then((response) => {
                 setHasStore(!!response.data);
             });
         }
@@ -41,20 +41,32 @@ export default function AuthenticatedLayout({ header, children }) {
                                 >
                                     Homepage
                                 </NavLink>
-                                <NavLink
-                                    href={route("stores.index")}
-                                    active={route().current("stores.index")}
-                                    className="text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
-                                >
-                                    Store
-                                </NavLink>
-                                <NavLink
-                                    href={hasStore ? route("mystore") : route("stores.create")}
-                                    active={route().current(hasStore ? "mystore" : "stores.create")}
-                                    className="text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
-                                >
-                                    {hasStore ? "My Store" : "Create Store"}
-                                </NavLink>
+                                {hasStore ? (
+                                    <>
+                                        <NavLink
+                                            href={route("mystore")}
+                                            active={route().current("mystore")}
+                                            className="text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
+                                        >
+                                            My Store
+                                        </NavLink>
+                                        <NavLink
+                                            href={route("orders.pending")}
+                                            active={route().current("orders.pending")}
+                                            className="text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
+                                        >
+                                            Order Pending
+                                        </NavLink>
+                                    </>
+                                ) : (
+                                    <NavLink
+                                        href={route("stores.create")}
+                                        active={route().current("stores.create")}
+                                        className="text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
+                                    >
+                                        Create Store
+                                    </NavLink>
+                                )}
                             </div>
                         </div>
 
@@ -69,7 +81,11 @@ export default function AuthenticatedLayout({ header, children }) {
                                                     className="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-700 transition duration-150 ease-in-out hover:text-blue-500 focus:outline-none dark:bg-gray-800 dark:text-gray-300 dark:hover:text-blue-400"
                                                 >
                                                     <img
-                                                        src="/path/to/profile-image.jpg"
+                                                        src={
+                                                            user?.Picture
+                                                                ? `/storage/${user.Picture}`
+                                                                : "/path/to/default-image.jpg"
+                                                        }
                                                         alt="Profile"
                                                         className="h-8 w-8 rounded-full"
                                                     />
@@ -78,19 +94,13 @@ export default function AuthenticatedLayout({ header, children }) {
                                         </Dropdown.Trigger>
 
                                         <Dropdown.Content>
-                                            <Dropdown.Link
-                                                href={route("profile.show")}
-                                            >
+                                            <Dropdown.Link href={route("profile.show")}>
                                                 Profile Details
                                             </Dropdown.Link>
-                                            <Dropdown.Link
-                                                href={route("orders.index")}
-                                            >
-                                                Order
+                                            <Dropdown.Link href={route("profile.orders")}>
+                                                User Orders
                                             </Dropdown.Link>
-                                            <Dropdown.Link
-                                                href={route("profile.edit")}
-                                            >
+                                            <Dropdown.Link href={route("profile.edit")}>
                                                 Setting Profile
                                             </Dropdown.Link>
                                             <Dropdown.Link
@@ -163,20 +173,32 @@ export default function AuthenticatedLayout({ header, children }) {
                         >
                             Homepage
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink
-                            href={route("stores.index")}
-                            active={route().current("stores.index")}
-                            className="text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
-                        >
-                            Store
-                        </ResponsiveNavLink>
-                        <ResponsiveNavLink
-                            href={hasStore ? route("mystore") : route("stores.create")}
-                            active={route().current(hasStore ? "mystore" : "stores.create")}
-                            className="text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
-                        >
-                            {hasStore ? "My Store" : "Create Store"}
-                        </ResponsiveNavLink>
+                        {hasStore ? (
+                            <>
+                                <ResponsiveNavLink
+                                    href={route("mystore")}
+                                    active={route().current("mystore")}
+                                    className="text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
+                                >
+                                    My Store
+                                </ResponsiveNavLink>
+                                <ResponsiveNavLink
+                                    href={route("orders.pending")}
+                                    active={route().current("orders.pending")}
+                                    className="text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
+                                >
+                                    Order Pending
+                                </ResponsiveNavLink>
+                            </>
+                        ) : (
+                            <ResponsiveNavLink
+                                href={route("stores.create")}
+                                active={route().current("stores.create")}
+                                className="text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
+                            >
+                                Create Store
+                            </ResponsiveNavLink>
+                        )}
                     </div>
 
                     {user && (
@@ -194,8 +216,8 @@ export default function AuthenticatedLayout({ header, children }) {
                                 <ResponsiveNavLink href={route("profile.show")}>
                                     Profile Details
                                 </ResponsiveNavLink>
-                                <ResponsiveNavLink href={route("orders.index")}>
-                                    Order
+                                <ResponsiveNavLink href={route("profile.orders")}>
+                                    User Orders
                                 </ResponsiveNavLink>
                                 <ResponsiveNavLink href={route("profile.edit")}>
                                     Setting Profile

@@ -17,7 +17,6 @@ class OrderFactory extends Factory
             'OrderStatus' => $this->faker->randomElement(['Pending', 'Completed', 'Canceled']), // Changed from 'orderStatus' to 'OrderStatus'
             'OrderDate' => $this->faker->dateTimeThisMonth(), // Changed from 'orderDate' to 'OrderDate'
             'TotalAmount' => $this->faker->randomFloat(2, 100, 1000), // Changed from 'totalAmount' to 'TotalAmount'
-            'payment_id' => $this->faker->numberBetween(1, 10),
         ];
     }
 }

@@ -15,13 +15,22 @@ class Product extends Model
         'Stock',
         'ProductType',
         'ProductStatus',
-        'ProductImage',
+        'image',
         'ProductDescription',
+        'ProductImage',
         'id_stores',
     ];
 
+    public function carts()
+    {
+        return $this->hasMany(Cart::class);
+    }
     public function store()
     {
         return $this->belongsTo(Store::class, 'id_stores');
+    }
+    public function orderDetails()
+    {
+        return $this->hasMany(OrderDetail::class, 'product_id');
     }
 }

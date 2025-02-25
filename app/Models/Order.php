@@ -7,27 +7,46 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Order extends Model
 {
     use HasFactory;
-    protected $fillable = [
-        'user_id',
-        'OrderStatus',
-        'OrderDate',
-        'TotalAmount',
-        'paymentID',
-    ];
-
-    public function user() {
+    protected $fillable = ['user_id', 'TotalAmount', 'OrderStatus', 'payment_method', 'payment_status'];
+    public function user()
+    {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function orderDetails() {
-        return $this->hasMany(OrderDetail::class, 'id_order');
+    public function order_details()
+    {
+
+        return $this->hasMany(OrderDetail::class, 'order_id');
     }
 
-    public function payment() {
-        return $this->hasOne(Payment::class, 'id_order');
+    public function payment()
+    {
+        return $this->hasOne(Payment::class, 'order_id');
     }
 
-    public function delivery() {
-        return $this->hasOne(Delivery::class, 'id_order');
+
+    public function delivery()
+    {
+        return $this->hasOne(Delivery::class, 'order_id');
+    }
+
+    public function items()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
+    public function products()
+    {
+        return $this->belongsToMany(Product::class, 'order_details', 'order_id', 'product_id')
+                    ->withPivot('Quantity', 'UnitPrice', 'Discount'); // รวมฟิลด์จากตารางตัวกลาง
+    }
+    public function orderDetails()
+    {
+
+        return $this->hasMany(OrderDetail::class, 'order_id');
+    }
+    public function deliveries()
+    {
+        return $this->hasMany(Delivery::class, 'order_id');
     }
 }

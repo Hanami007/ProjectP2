@@ -29,7 +29,12 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated()); //อัปเดตข้อมูลผู้ใช้โดยใช้ fill
+        $request->user()->fill([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,  // เพิ่มการอัปเดตเบอร์โทรศัพท์
+            'address' => $request->address,  // เพิ่มการอัปเดตที่อยู่
+        ]);
 
         if ($request->user()->isDirty('email')) { //ตรวจสอบการแก้ไขอีเมล
             $request->user()->email_verified_at = null; //ถ้ามีการแก้ไข e จะถูกเปลี่ยนเป็น Null
@@ -60,4 +65,19 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+
+    public function userOrders()
+    {
+        $user = Auth::user();
+        // ดึงข้อมูลคำสั่งซื้อและรายละเอียดสินค้าที่ผู้ใช้ทำ
+        $orders = $user->orders()->with('orderDetails.product', 'delivery')->get();
+
+        return Inertia::render('Profile/UserOrders', [
+            'orders' => $orders,
+        ]);
+    }
+
+
+
+
 }
