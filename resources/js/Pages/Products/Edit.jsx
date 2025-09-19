@@ -29,7 +29,7 @@ const EditProduct = ({ store, product }) => {
                 <div className="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
                     <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8 dark:bg-gray-800">
                         <div className="max-w-xl">
-                            <h1 className="text-3xl font-semibold text-center mb-8">แก้ไขสินค้า</h1>
+                            <h1 className="text-3xl font-semibold text-center mb-8  text-gray-700 dark:text-gray-300">แก้ไขสินค้า</h1>
                             <form onSubmit={handleEditProduct}>
                                 <div className="mb-4">
                                     <label className="block text-gray-700 dark:text-gray-300">ชื่อสินค้า</label>

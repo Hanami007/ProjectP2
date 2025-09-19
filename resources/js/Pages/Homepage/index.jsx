@@ -134,7 +134,7 @@ const Homepage = ({ products }) => {
     };
 
     const [currentPage, setCurrentPage] = useState(1);
-    const productsPerPage = 20;
+    const productsPerPage = 8;
 
     const startIndex = (currentPage - 1) * productsPerPage;
     const paginatedProducts = filteredProducts.slice(
